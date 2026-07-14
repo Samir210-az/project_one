@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Müdir Seyfi — Layihə Yaddaşı</title>
+<meta name="theme-color" content="#1a0a0a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Seyf">
+<style>
+  :root{
+    --bordo:#6A0000;
+    --bordo-deep:#3d0000;
+    --gold:#D2A55D;
+    --gold-light:#E6C07A;
+    --teal:#2A9D8F;
+    --bg:#120909;
+    --bg2:#1b0d0d;
+    --ink:#f3ece2;
+    --ink-dim:#c9b8a8;
+    --card:#1e1010;
+    --line:rgba(210,165,93,0.18);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;overflow-x:hidden;}
+  body{
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(106,0,0,0.55), transparent 55%),
+      radial-gradient(ellipse at 90% 0%, rgba(42,157,143,0.12), transparent 45%),
+      radial-gradient(ellipse at 50% 120%, rgba(210,165,93,0.10), transparent 50%),
+      var(--bg);
+    min-height:100vh;
+  }
+  .grain{position:fixed;inset:0;pointer-events:none;opacity:.05;z-index:1;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .parallax{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  .parallax .orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;}
+  .orb1{width:340px;height:340px;background:var(--bordo);top:-100px;left:-80px;}
+  .orb2{width:260px;height:260px;background:var(--teal);bottom:5%;right:-60px;opacity:.18;}
+  .orb3{width:200px;height:200px;background:var(--gold);top:40%;left:60%;opacity:.10;}
+
+  /* ---------- LOCK SCREEN ---------- */
+  #lock{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;padding:24px;text-align:center;
+    background:linear-gradient(180deg,#150a0a,#0d0606 70%);}
+  .seal{width:88px;height:88px;border-radius:50%;
+    border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;
+    margin-bottom:22px;position:relative;
+    box-shadow:0 0 0 1px rgba(210,165,93,.15), 0 0 40px rgba(106,0,0,.55);
+    animation:sealFloat 5s ease-in-out infinite;}
+  .seal::before{content:"";position:absolute;inset:-8px;border-radius:50%;
+    border:1px dashed rgba(210,165,93,.35);animation:spin 18s linear infinite;}
+  .seal svg{width:38px;height:38px;stroke:var(--gold-light);}
+  @keyframes sealFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .brand{font-weight:800;letter-spacing:.14em;font-size:13px;color:var(--gold-light);
+    text-transform:uppercase;margin-bottom:6px;}
+  .brand-wave span{display:inline-block;animation:wave 2.4s ease-in-out infinite;}
+  @keyframes wave{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+  h1.title{font-size:26px;margin:0 0 6px;font-weight:800;
+    background:linear-gradient(120deg,var(--gold-light),var(--gold) 60%,#fff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .sub{color:var(--ink-dim);font-size:13.5px;margin-bottom:28px;max-width:280px;line-height:1.5;}
+  #lockForm{display:flex;flex-direction:column;gap:12px;width:100%;max-width:300px;}
+  input.pass{
+    background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;
+    padding:16px 18px;color:var(--ink);font-size:17px;letter-spacing:.25em;text-align:center;
+    outline:none;transition:.25s;}
+  input.pass:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(210,165,93,.15);}
+  .btn{border:none;border-radius:14px;padding:15px 18px;font-size:15px;font-weight:700;
+    cursor:pointer;transition:.2s;letter-spacing:.02em;}
+  .btn-primary{background:linear-gradient(120deg,var(--bordo),#8a0000);color:#fff;
+    box-shadow:0 8px 24px rgba(106,0,0,.45);}
+  .btn-primary:active{transform:scale(.97);}
+  .btn-ghost{background:transparent;color:var(--ink-dim);border:1px solid var(--line);}
+  #lockMsg{min-height:18px;font-size:12.5px;color:#ff8b8b;margin-top:4px;}
+  #lockHint{margin-top:22px;font-size:11.5px;color:rgba(201,184,168,.6);}
+
+  /* ---------- APP ---------- */
+  #app{display:none;position:relative;z-index:2;padding:20px 16px 90px;max-width:720px;margin:0 auto;}
+  header.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;
+    padding-top:6px;}
+  header.top .h-title{font-size:20px;font-weight:800;}
+  header.top .h-title small{display:block;font-size:11px;font-weight:600;color:var(--ink-dim);
+    letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
+  .icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);
+    background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;
+    color:var(--gold-light);cursor:pointer;}
+  .toolbar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+  .chip{border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink-dim);
+    padding:8px 13px;border-radius:100px;font-size:12.5px;cursor:pointer;transition:.2s;}
+  .chip.active{background:var(--gold);color:#1a0a0a;border-color:var(--gold);font-weight:700;}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:14px;}
+  .card{background:linear-gradient(160deg,var(--card),#170c0c);border:1px solid var(--line);
+    border-radius:18px;padding:18px;position:relative;overflow:hidden;cursor:pointer;
+    transition:transform .35s, box-shadow .35s;}
+  .card::after{content:"";position:absolute;inset:0;border-radius:18px;padding:1px;
+    background:linear-gradient(135deg,rgba(210,165,93,.4),transparent 40%,rgba(42,157,143,.25));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:0;transition:.3s;}
+  .card:active{transform:scale(.98);}
+  .card.open::after{opacity:1;}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .card-name{font-size:16.5px;font-weight:800;color:var(--ink);}
+  .card-url{font-size:11.5px;color:var(--teal);margin-top:3px;word-break:break-all;}
+  .badge{font-size:10px;font-weight:700;padding:4px 9px;border-radius:100px;white-space:nowrap;
+    letter-spacing:.03em;text-transform:uppercase;}
+  .badge.firebase{background:rgba(210,165,93,.15);color:var(--gold-light);border:1px solid rgba(210,165,93,.3);}
+  .badge.local{background:rgba(42,157,143,.15);color:var(--teal);border:1px solid rgba(42,157,143,.3);}
+  .card-desc{font-size:12.5px;color:var(--ink-dim);margin-top:8px;line-height:1.5;}
+  .chev{transition:transform .3s;color:var(--gold);opacity:.7;}
+  .card.open .chev{transform:rotate(180deg);}
+
+  .detail{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+  .card.open .detail{max-height:900px;margin-top:14px;}
+  .field{border-top:1px dashed var(--line);padding:12px 0;}
+  .field-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);
+    font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+  .field-value{font-size:13.5px;color:var(--ink);line-height:1.6;white-space:pre-wrap;}
+  .field-value.empty{color:rgba(201,184,168,.4);font-style:italic;}
+  .pwbox{display:flex;align-items:center;gap:8px;}
+  .pwtext{font-family:ui-monospace,Menlo,monospace;background:rgba(0,0,0,.3);
+    padding:8px 12px;border-radius:10px;letter-spacing:.12em;font-size:14.5px;flex:1;
+    border:1px solid var(--line);}
+  .mini{border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--gold-light);
+    border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer;}
+  .edit-row{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+  .edit-row textarea,.edit-row input{background:rgba(0,0,0,.25);border:1px solid var(--line);
+    color:var(--ink);border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;
+    resize:vertical;}
+  .edit-actions{display:flex;gap:8px;margin-top:6px;}
+  .edit-actions .mini{flex:1;text-align:center;}
+
+  .fab{position:fixed;right:18px;bottom:22px;z-index:20;width:56px;height:56px;border-radius:50%;
+    background:linear-gradient(135deg,var(--bordo),#a30000);border:none;color:#fff;font-size:26px;
+    box-shadow:0 10px 30px rgba(106,0,0,.55);display:flex;align-items:center;justify-content:center;}
+
+  footer.foot{text-align:center;margin-top:34px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:11.5px;color:rgba(201,184,168,.55);}
+  footer.foot a{color:var(--gold-light);text-decoration:none;font-weight:600;}
+
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:#1a0a0a;border:1px solid var(--gold);color:var(--gold-light);padding:11px 18px;
+    border-radius:100px;font-size:12.5px;z-index:60;opacity:0;transition:.3s;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  ::selection{background:var(--gold);color:#1a0a0a;}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="parallax" id="parallax">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<!-- LOCK SCREEN -->
+<div id="lock">
+  <div class="seal">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="10" width="16" height="10" rx="2"></rect>
+      <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+    </svg>
+  </div>
+  <div class="brand brand-wave" id="brandWave">SECURITY GROUP</div>
+  <h1 class="title" id="lockTitle">Layihə Yaddaşı</h1>
+  <p class="sub" id="lockSub">Bütün admin girişləri, parollar və Firebase qeydləri bir seyfdə.</p>
+  <form id="lockForm" autocomplete="off">
+    <input class="pass" type="password" id="passInput" placeholder="••••••" inputmode="numeric" autocomplete="off">
+    <button type="submit" class="btn btn-primary" id="lockBtn">Aç</button>
+  </form>
+  <div id="lockMsg"></div>
+  <div id="lockHint"></div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header class="top">
+    <div class="h-title">Layihə Yaddaşı<small id="countLabel">yüklənir...</small></div>
+    <div style="display:flex;gap:8px;">
+      <div class="icon-btn" id="exportBtn" title="Ehtiyat nüsxə">⇩</div>
+      <div class="icon-btn" id="lockAppBtn" title="Bağla">⏻</div>
+    </div>
+  </header>
+
+  <div class="toolbar" id="toolbar"></div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer class="foot">
+    Bu seyf yalnız bu telefonda saxlanılır — heç bir serverə göndərilmir.<br>
+    By <a href="https://instagram.com/s_akhundoff" target="_blank">s_akhundoff</a>
+  </footer>
+</div>
+
+<div class="fab" id="addBtn">+</div>
+<div class="toast" id="toast"></div>
+
+<input type="file" id="importFile" accept="application/json" style="display:none">
+
+<script>
+/* =========================================================
+   MÜDİR SEYFİ — local-only credential vault
+   Bütün data yalnız bu cihazın localStorage-də saxlanılır.
+   ========================================================= */
+
+const LS_HASH = 'vault_hash_v1';
+const LS_DATA = 'vault_data_v1';
+
+// ---------- Naming: "birinci dəfə açanda parol qoy" ----------
+async function sha256(text){
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+const lockEl = document.getElementById('lock');
+const appEl = document.getElementById('app');
+const passInput = document.getElementById('passInput');
+const lockForm = document.getElementById('lockForm');
+const lockMsg = document.getElementById('lockMsg');
+const lockHint = document.getElementById('lockHint');
+const lockTitle = document.getElementById('lockTitle');
+const lockSub = document.getElementById('lockSub');
+const lockBtn = document.getElementById('lockBtn');
+
+let isFirstRun = !localStorage.getItem(LS_HASH);
+
+function setupLockScreenText(){
+  if(isFirstRun){
+    lockTitle.textContent = 'Seyfi qur';
+    lockSub.textContent = 'İlk dəfədir açırsan. Özünə bir master parol qoy — bunu unutma, heç yerdə saxlanmır.';
+    lockBtn.textContent = 'Parolu təyin et';
+    lockHint.textContent = '4+ simvol, istənilən rəqəm və ya söz ola bilər.';
+  } else {
+    lockTitle.textContent = 'Layihə Yaddaşı';
+    lockSub.textContent = 'Bütün admin girişləri, parollar və Firebase qeydləri bir seyfdə.';
+    lockBtn.textContent = 'Aç';
+    lockHint.textContent = '';
+  }
+}
+setupLockScreenText();
+
+// letter-wave
+document.getElementById('brandWave').innerHTML =
+  'SECURITY GROUP'.split('').map((c,i)=>`<span style="animation-delay:${i*0.05}s">${c===' '?'&nbsp;':c}</span>`).join('');
+
+lockForm.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const val = passInput.value.trim();
+  if(val.length < 4){ lockMsg.textContent = 'Ən azı 4 simvol daxil et.'; return; }
+  const hash = await sha256(val);
+  if(isFirstRun){
+    localStorage.setItem(LS_HASH, hash);
+    if(!localStorage.getItem(LS_DATA)){
+      localStorage.setItem(LS_DATA, JSON.stringify(defaultProjects()));
+    }
+    unlockApp();
+  } else {
+    const saved = localStorage.getItem(LS_HASH);
+    if(hash === saved){ unlockApp(); }
+    else { lockMsg.textContent = 'Parol yanlışdır.'; passInput.value=''; }
+  }
+});
+
+function unlockApp(){
+  lockEl.style.display = 'none';
+  appEl.style.display = 'block';
+  renderAll();
+}
+
+document.getElementById('lockAppBtn').addEventListener('click', ()=>{
+  appEl.style.display = 'none';
+  lockEl.style.display = 'flex';
+  passInput.value = '';
+  isFirstRun = !localStorage.getItem(LS_HASH);
+  setupLockScreenText();
+});
+
+// ---------- Default / seed data (sənin real layihələrin) ----------
+function defaultProjects(){
+  return [
+    {
+      id: 'klinika',
+      name: 'Klinika Sistemi',
+      url: 'https://samir210-az.github.io/klinika-sistemi/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'AN Mərkəzinin tam klinika idarəetmə sistemi — pasiyent, seans, ödəniş, maliyyə hesabatları.',
+      adminAccess: 'Sayta girib "Admin" rejimini seç, PIN daxil et.',
+      adminPassword: '1234 (admin PIN)\nStaff PIN-ləri hər işçiyə ayrıca təyin olunub — Admin panelindəki "İşçilər" bölməsindən bax.',
+      registration: 'Qeydiyyat backend tələb etmir — pasiyentlər sistem daxilində "Pasiyentlər → Yeni pasiyent" formasından admin/staff tərəfindən əlavə olunur. İctimai qeydiyyat forması yoxdur.',
+      firebase: 'Layihə: an-psixoloji-33442\nDatabase path: klinika/\nAlt qovluqlar: klinika/patients, klinika/sessions, klinika/payments, klinika/staff, klinika/expenses, klinika/auditLog\nQeyd: Firebase Security Rules Console-dan əl ilə yenilənməlidir yeni alt-collection əlavə olunanda.',
+      notes: 'Sistemi sıfırlamaq üçün Admin panelində "SIFIRLA" yaz — bu yalnız seanslar/ödənişlər/xərcləri silir, pasiyent və işçi siyahısına toxunmur.'
+    },
+    {
+      id: 'ozelsu',
+      name: 'Özəl Su',
+      url: 'https://samir210-az.github.io/ozelsu/',
+      type: 'local',
+      category: 'Biznes',
+      desc: '19 litrlik su çatdırılması biznesinin sayt + admin paneli. WhatsApp sifariş, nisyə izləmə.',
+      adminAccess: 'Footer-dəki loqoya 5 dəfə ardıcıl toxun → parol pəncərəsi açılır.',
+      adminPassword: 'ozelsu2026',
+      registration: 'Müştəri qeydiyyatı yoxdur — sifarişlər WhatsApp forması ilə gedir. Admin paneldə "Nisyə" (kredit) müştəriləri əl ilə əlavə olunur.',
+      firebase: 'Firebase istifadə olunmur. Qiymətlər GitHub API vasitəsilə config.json faylına sinxronlaşdırılır (bütün ziyarətçilər eyni qiyməti görsün deyə).',
+      notes: 'Biznes telefonu: 070 204 55 52. Service worker v4 — network-first JSON keşləmə.'
+    },
+    {
+      id: 'usaqiq',
+      name: 'UşaqIQ',
+      url: 'https://samir210-az.github.io/usaq_iq',
+      type: 'local',
+      category: 'Klinika',
+      desc: 'Uşaq inkişafı qiymətləndirmə + oyunlar + rəngləmə tətbiqi. 21 sualdan hesabat çıxarır.',
+      adminAccess: 'Bu layihədə ayrıca admin paneli qurulmayıb.',
+      adminPassword: '',
+      registration: 'Valideyn qiymətləndirmə funnelini keçir → email daxil edir → fərdi hesabat alır. Bu "qeydiyyat" e-poçt tutma formasıdır, hesab yaratmır.',
+      firebase: 'Bu layihədə Firebase bağlantısı yoxdur — tam localStorage/tək fayl məntiqi ilə işləyir.',
+      notes: 'Mütəxəssisə yönləndirmə: AN Psixoloji Mərkəz, +994 55 415 72 15.'
+    },
+    {
+      id: 'ansite',
+      name: 'AN Mərkəzi — Əsas Sayt',
+      url: '',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'AN Psixoloji Dəstək və Reabilitasiya Mərkəzinin əsas saytı — xəbərlər, işçilər, Haqqımızda.',
+      adminAccess: 'Footer-dəki loqoya 5 dəfə toxun (handleLogoTap funksiyası) → gizli admin girişi açılır.',
+      adminPassword: '',
+      registration: '',
+      firebase: 'Layihə: an-psixoloji-33442 — xəbərlər, işçi siyahısı və "Haqqımızda" məlumatları buradan idarə olunur.',
+      notes: 'Parolu bura özün əlavə et — yadda saxlanılmayıb.'
+    },
+    {
+      id: 'neurocbt',
+      name: 'NeuroCBT / SaaS',
+      url: '',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'BAI və BDI testlərini ayrıca aparan psixoloji qiymətləndirmə sistemi, admin təsdiq paneli ilə.',
+      adminAccess: 'Admin panelində istifadəçi təsdiq/rədd/silmə funksiyaları var.',
+      adminPassword: '',
+      registration: 'İstifadəçilər qeydiyyatdan keçir → admin panel təsdiq edənə qədər gözləyir (real-time onValue ilə).',
+      firebase: 'Layihə: an-psixoloji-33442\nDatabase path: saas_users/\nBDI sualı 9 (≥2 bal) zamanı kriz xəbərdarlığı avtomatik göstərilir.',
+      notes: 'Parolu bura özün əlavə et.'
+    },
+    {
+      id: 'mekteb',
+      name: 'Məktəbəqədər Hazırlıq',
+      url: '',
+      type: 'local',
+      category: 'Təhsil',
+      desc: '2 aylıq məktəbəqədər hazırlıq proqramı — admin/müəllim/valideyn rolları ilə.',
+      adminAccess: 'Rol seçimi ilə giriş (admin/teacher/parent).',
+      adminPassword: '',
+      registration: 'Şagird qeydiyyatı admin/müəllim tərəfindən sistem daxilində aparılır.',
+      firebase: 'Firebase yoxdur — localStorage ilə saxlanılır (cihazdan asılıdır, bulud sinxronizasiyası yoxdur).',
+      notes: 'Parolu bura özün əlavə et.'
+    }
+  ];
+}
+
+// ---------- State ----------
+let projects = [];
+let activeCat = 'Hamısı';
+let openId = null;
+let editId = null;
+
+function loadData(){
+  try{
+    projects = JSON.parse(localStorage.getItem(LS_DATA) || '[]');
+  }catch(e){ projects = []; }
+}
+function saveData(){
+  localStorage.setItem(LS_DATA, JSON.stringify(projects));
+}
+
+function categories(){
+  const set = new Set(projects.map(p=>p.category || 'Digər'));
+  return ['Hamısı', ...Array.from(set)];
+}
+
+function renderToolbar(){
+  const tb = document.getElementById('toolbar');
+  tb.innerHTML = '';
+  categories().forEach(cat=>{
+    const c = document.createElement('div');
+    c.className = 'chip' + (cat===activeCat ? ' active':'');
+    c.textContent = cat;
+    c.onclick = ()=>{ activeCat = cat; renderAll(); };
+    tb.appendChild(c);
+  });
+}
+
+function esc(s){ return (s||'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function fieldBlock(label, value, icon, isPassword){
+  const empty = !value || !value.trim();
+  return `<div class="field">
+    <div class="field-label">${icon||''} ${label}</div>
+    ${isPassword && !empty ? `
+      <div class="pwbox">
+        <div class="pwtext">${esc(value)}</div>
+        <div class="mini copy-btn" data-copy="${esc(value)}">Kopyala</div>
+      </div>` :
+      `<div class="field-value ${empty?'empty':''}">${empty ? 'Yadda saxlanılmayıb — düzəlt düyməsindən əlavə et.' : esc(value)}</div>`
+    }
+  </div>`;
+}
+
+function cardHTML(p){
+  const open = openId === p.id;
+  const isEdit = editId === p.id;
+  return `<div class="card ${open?'open':''}" data-id="${p.id}">
+    <div class="card-top" data-toggle="${p.id}">
+      <div>
+        <div class="card-name">${esc(p.name)}</div>
+        ${p.url ? `<div class="card-url">${esc(p.url)}</div>` : ''}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="badge ${p.type==='firebase'?'firebase':'local'}">${p.type==='firebase'?'Firebase':'Local'}</span>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+    <div class="card-desc">${esc(p.desc||'')}</div>
+    <div class="detail">
+      ${isEdit ? editFormHTML(p) : `
+        ${fieldBlock('Admin panelə giriş', p.adminAccess, '🔑')}
+        ${fieldBlock('Admin parol / PIN', p.adminPassword, '🛡️', true)}
+        ${fieldBlock('Qeydiyyat necə aparılır', p.registration, '📋')}
+        ${fieldBlock('Firebase', p.firebase, '🔥')}
+        ${fieldBlock('Qeydlər', p.notes, '📝')}
+        <div class="edit-actions">
+          <div class="mini" data-edit="${p.id}">✏️ Düzəlt</div>
+          ${p.url ? `<div class="mini" data-open="${esc(p.url)}">↗ Sayta keç</div>` : ''}
+          <div class="mini" data-del="${p.id}" style="color:#ff8b8b;">🗑</div>
+        </div>
+      `}
+    </div>
+  </div>`;
+}
+
+function editFormHTML(p){
+  return `<div class="edit-row">
+    <input data-f="name" placeholder="Layihə adı" value="${esc(p.name)}">
+    <input data-f="url" placeholder="URL (https://...)" value="${esc(p.url)}">
+    <input data-f="category" placeholder="Kateqoriya (Klinika / Biznes / Təhsil...)" value="${esc(p.category)}">
+    <textarea data-f="desc" placeholder="Qısa izah" rows="2">${esc(p.desc)}</textarea>
+    <textarea data-f="adminAccess" placeholder="Admin panelə necə girilir" rows="2">${esc(p.adminAccess)}</textarea>
+    <textarea data-f="adminPassword" placeholder="Admin parol / PIN" rows="2">${esc(p.adminPassword)}</textarea>
+    <textarea data-f="registration" placeholder="Qeydiyyat necə aparılır" rows="2">${esc(p.registration)}</textarea>
+    <textarea data-f="firebase" placeholder="Firebase layihə / path / qeydlər" rows="3">${esc(p.firebase)}</textarea>
+    <textarea data-f="notes" placeholder="Əlavə qeydlər" rows="2">${esc(p.notes)}</textarea>
+    <div class="edit-actions">
+      <div class="mini" data-save="${p.id}" style="background:rgba(42,157,143,.15);color:var(--teal);border-color:rgba(42,157,143,.4);">✓ Yadda saxla</div>
+      <div class="mini" data-canceledit="${p.id}">İmtina</div>
+    </div>
+  </div>`;
+}
+
+function renderGrid(){
+  const grid = document.getElementById('grid');
+  const list = projects.filter(p => activeCat==='Hamısı' || (p.category||'Digər')===activeCat);
+  grid.innerHTML = list.map(cardHTML).join('') || `<div style="text-align:center;color:var(--ink-dim);padding:40px 0;">Bu kateqoriyada layihə yoxdur.</div>`;
+
+  grid.querySelectorAll('[data-toggle]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const id = el.getAttribute('data-toggle');
+      if(editId === id) return;
+      openId = openId === id ? null : id;
+      renderGrid();
+    });
+  });
+  grid.querySelectorAll('[data-edit]').forEach(el=>{
+    el.addEventListener('click',(e)=>{ e.stopPropagation(); editId = el.getAttribute('data-edit'); openId = editId; renderGrid(); });
+  });
+  grid.querySelectorAll('[data-canceledit]').forEach(el=>{
+    el.addEventListener('click',(e)=>{ e.stopPropagation(); editId = null; renderGrid(); });
+  });
+  grid.querySelectorAll('[data-save]').forEach(el=>{
+    el.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      const id = el.getAttribute('data-save');
+      const card = el.closest('.card');
+      const p = projects.find(x=>x.id===id);
+      card.querySelectorAll('[data-f]').forEach(inp=>{
+        p[inp.getAttribute('data-f')] = inp.value;
+      });
+      saveData();
+      editId = null;
+      renderAll();
+      showToast('Yadda saxlanıldı ✓');
+    });
+  });
+  grid.querySelectorAll('[data-del]').forEach(el=>{
+    el.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      const id = el.getAttribute('data-del');
+      if(confirm('Bu layihəni seyfdən silmək istəyirsən?')){
+        projects = projects.filter(x=>x.id!==id);
+        saveData(); renderAll();
+        showToast('Silindi');
+      }
+    });
+  });
+  grid.querySelectorAll('[data-open]').forEach(el=>{
+    el.addEventListener('click',(e)=>{ e.stopPropagation(); window.open(el.getAttribute('data-open'),'_blank'); });
+  });
+  grid.querySelectorAll('.copy-btn').forEach(el=>{
+    el.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      const text = el.getAttribute('data-copy');
+      navigator.clipboard.writeText(text).then(()=>showToast('Kopyalandı ✓'));
+    });
+  });
+
+  // 3D tilt on hover/touch for cards (matches your established micro-interaction pattern)
+  grid.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('mousemove', e=>{
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left)/r.width - 0.5;
+      const y = (e.clientY - r.top)/r.height - 0.5;
+      card.style.transform = `perspective(600px) rotateY(${x*4}deg) rotateX(${-y*4}deg)`;
+    });
+    card.addEventListener('mouseleave', ()=>{ card.style.transform=''; });
+  });
+}
+
+function renderAll(){
+  loadData();
+  document.getElementById('countLabel').textContent = projects.length + ' layihə yaddaşda saxlanılır';
+  renderToolbar();
+  renderGrid();
+}
+
+// ---------- Add new project ----------
+document.getElementById('addBtn').addEventListener('click', ()=>{
+  const id = 'p_' + Date.now();
+  projects.push({ id, name:'Yeni layihə', url:'', type:'local', category:'Digər',
+    desc:'', adminAccess:'', adminPassword:'', registration:'', firebase:'', notes:'' });
+  saveData();
+  openId = id; editId = id;
+  renderAll();
+  document.querySelector(`[data-id="${id}"]`)?.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+// ---------- Export / Import ----------
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(projects, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'muhdir-seyf-yedek-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  showToast('Ehtiyat nüsxə endirildi');
+});
+
+// ---------- Toast ----------
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+// ---------- Simple parallax on scroll ----------
+window.addEventListener('scroll', ()=>{
+  const y = window.scrollY;
+  document.querySelectorAll('.orb').forEach((o,i)=>{
+    o.style.transform = `translateY(${y * (0.03 + i*0.02)}px)`;
+  });
+});
+
+// ---------- PWA ----------
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
