@@ -368,6 +368,85 @@ function defaultProjects(){
   ];
 }
 
+// ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
+const LS_VERSION = 'vault_version_v1';
+const VAULT_VERSION = 2;
+
+function newEntriesV2(){
+  const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
+  const portalReg = 'İstifadəçi an-kurs-portali saytında Firebase Auth ilə qeydiyyatdan keçir (email+parol). Admin ona bu kursu portal/customers/{uid}/allowedCourses siyahısına əlavə edərək icazə verir — kurs linki avtomatik açılır.';
+  const portalFb = (courseKey) => `Layihə: an-psixoloji-33442\nPath-lar: portal/admins/{uid}, portal/customers/{uid}, portal/courses\nCOURSE_KEY: "${courseKey}"\nQoruma: guard-v4.js hər səhifədə Firebase Auth yoxlayır, icazə yoxdursa an-kurs-portali-na geri atır.`;
+  const portalNotes = 'Məzmun kopyalanmaya qarşı qorunur (protect.js — sağ klik, DevTools açma, çap və kopyalama bloklanıb).';
+
+  return [
+    {
+      id: 'kurs-portali',
+      name: 'AN Kurs Portalı (Mərkəzi Giriş)',
+      url: 'https://samir210-az.github.io/an-kurs-portali/',
+      type: 'firebase',
+      category: 'Kurslar',
+      desc: 'Bütün kurslar üçün vahid giriş nöqtəsi — istifadəçi burada login olur, admin ona kurs icazələri verir.',
+      adminAccess: 'Sayt Firebase Auth ilə işləyir — admin hesabı ilə giriş et. Admin UID-i Firebase-də portal/admins altında true olmalıdır.',
+      adminPassword: '',
+      registration: 'Yeni istifadəçi email+parol ilə qeydiyyatdan keçir → Firebase Auth-da hesab yaranır → admin ona portal/customers/{uid}/allowedCourses siyahısında kurs(lar) təyin edir.',
+      firebase: 'Layihə: an-psixoloji-33442\nPath-lar: portal/admins, portal/customers, portal/courses\n"nuke.html" adlı təhlükəli təmizləmə səhifəsi var — ehtiyatlı istifadə et.',
+      notes: 'Bütün 3 kurs (aşağıda) giriş üçün bu portala bağlıdır — buradan icazə vermədən heç bir kurs açılmır.'
+    },
+    {
+      id: 'koqnitiv-kurs',
+      name: 'Koqnitiv Davranış Terapiyası Kursu',
+      url: 'https://samir210-az.github.io/koqnitiv_kurs/',
+      type: 'firebase',
+      category: 'Kurslar',
+      desc: '20 dərslik KBT kursu — panik atak, OKB, depressiya, DEHB, yas terapiyası və s. mövzular.',
+      adminAccess: portalNote,
+      adminPassword: '',
+      registration: portalReg,
+      firebase: portalFb('koqnitiv_kurs'),
+      notes: portalNotes
+    },
+    {
+      id: 'kurs-13',
+      name: 'Uşaq və Yeniyetmə Terapiya Proqramları (Kurs 13)',
+      url: 'https://samir210-az.github.io/kurs_13/',
+      type: 'firebase',
+      category: 'Kurslar',
+      desc: '13 dərslik kurs — aqressiv uşaqlarla iş, kəkələmə, oyun terapiyası növləri, qrup terapiyası.',
+      adminAccess: portalNote,
+      adminPassword: '',
+      registration: portalReg,
+      firebase: portalFb('kurs_13'),
+      notes: portalNotes
+    },
+    {
+      id: 'usaq-psixologiyasi-kursu',
+      name: 'Uşaq və Yeniyetmə Psixologiyası Kursu (XII)',
+      url: 'https://samir210-az.github.io/usaq-psixologiyasi-kursu/',
+      type: 'firebase',
+      category: 'Kurslar',
+      desc: '15 dərslik kurs — ilkin diaqnostika, autizm/ABA, DEHB, enurez/enkoprez, mutizm, boşanma mövzuları.',
+      adminAccess: portalNote,
+      adminPassword: '',
+      registration: portalReg,
+      firebase: portalFb('usaq-psixologiyasi-kursu'),
+      notes: portalNotes
+    },
+    {
+      id: 'aba-terapiya',
+      name: 'ABA Terapiya Platforması',
+      url: 'https://samir210-az.github.io/aba-terapiya/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: '6 qiymətləndirmə aləti (VB-MAPP, ABLLS-R, AFLS, FBA, Vineland-3, PEAK) və fərdi proqram generatoru.',
+      adminAccess: 'admin.html səhifəsinə keç → PIN daxil et. Bu panel qeydiyyatdan keçənlərin siyahısını göstərir.',
+      adminPassword: 'AN2026EA',
+      registration: 'İstifadəçilər sayt üzərindən qiymətləndirmə/proqram sorğusu göndərir, qeydlər Firebase-ə yazılır və admin.html-də siyahı kimi görünür.',
+      firebase: 'Layihə: an-psixoloji-33442\nPath: aba_terapiya/registrations',
+      notes: 'Diqqət: bu platformadakı test maddələri real standartlaşdırılmış alətlərlə (VB-MAPP və s.) tam üst-üstə düşmür — memory-ə görə mütəxəssislərin əsl mətnlərlə doldurması planlaşdırılıb, hələ tam bitməyib.'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -378,6 +457,15 @@ function loadData(){
   try{
     projects = JSON.parse(localStorage.getItem(LS_DATA) || '[]');
   }catch(e){ projects = []; }
+  const currentVersion = parseInt(localStorage.getItem(LS_VERSION) || '1', 10);
+  if(currentVersion < VAULT_VERSION){
+    const existingIds = new Set(projects.map(p=>p.id));
+    newEntriesV2().forEach(np=>{
+      if(!existingIds.has(np.id)) projects.push(np);
+    });
+    localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
+    saveData();
+  }
 }
 function saveData(){
   localStorage.setItem(LS_DATA, JSON.stringify(projects));
