@@ -386,8 +386,8 @@ function newEntriesV2(){
       type: 'firebase',
       category: 'Kurslar',
       desc: 'Bütün kurslar üçün vahid giriş nöqtəsi — istifadəçi burada login olur, admin ona kurs icazələri verir.',
-      adminAccess: 'Sayt Firebase Auth ilə işləyir — admin hesabı ilə giriş et. Admin UID-i Firebase-də portal/admins altında true olmalıdır.',
-      adminPassword: '',
+      adminAccess: 'Sayt Firebase Auth ilə işləyir — admin hesabı ilə giriş et (aşağıdakı email/parolla). Admin UID-i Firebase-də portal/admins altında true olmalıdır.',
+      adminPassword: 'admin@portal.com / AN2026EA',
       registration: 'Yeni istifadəçi email+parol ilə qeydiyyatdan keçir → Firebase Auth-da hesab yaranır → admin ona portal/customers/{uid}/allowedCourses siyahısında kurs(lar) təyin edir.',
       firebase: 'Layihə: an-psixoloji-33442\nPath-lar: portal/admins, portal/customers, portal/courses\n"nuke.html" adlı təhlükəli təmizləmə səhifəsi var — ehtiyatlı istifadə et.',
       notes: 'Bütün 3 kurs (aşağıda) giriş üçün bu portala bağlıdır — buradan icazə vermədən heç bir kurs açılmır.'
