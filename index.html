@@ -295,7 +295,7 @@ function defaultProjects(){
       category: 'Klinika',
       desc: 'AN Mərkəzinin tam klinika idarəetmə sistemi — pasiyent, seans, ödəniş, maliyyə hesabatları.',
       adminAccess: 'Sayta girib "Admin" rejimini seç, PIN daxil et.',
-      adminPassword: '1234 (admin PIN)\nStaff PIN-ləri hər işçiyə ayrıca təyin olunub — Admin panelindəki "İşçilər" bölməsindən bax.',
+      adminPassword: '1987 (admin PIN)\nStaff PIN-ləri hər işçiyə ayrıca təyin olunub — Admin panelindəki "İşçilər" bölməsindən bax. Yeni işçi əlavə olunanda ona PIN verilməli, yalnız onda "Kimsiniz?" siyahısında görünür.',
       registration: 'Qeydiyyat backend tələb etmir — pasiyentlər sistem daxilində "Pasiyentlər → Yeni pasiyent" formasından admin/staff tərəfindən əlavə olunur. İctimai qeydiyyat forması yoxdur.',
       firebase: 'Layihə: an-psixoloji-33442\nDatabase path: klinika/\nAlt qovluqlar: klinika/patients, klinika/sessions, klinika/payments, klinika/staff, klinika/expenses, klinika/auditLog\nQeyd: Firebase Security Rules Console-dan əl ilə yenilənməlidir yeni alt-collection əlavə olunanda.',
       notes: 'Sistemi sıfırlamaq üçün Admin panelində "SIFIRLA" yaz — bu yalnız seanslar/ödənişlər/xərcləri silir, pasiyent və işçi siyahısına toxunmur.'
@@ -370,7 +370,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 4;
+const VAULT_VERSION = 5;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -490,6 +490,15 @@ function applyV4Updates(list){
   return list;
 }
 
+// ---------- Migration v5: klinika-sistemi admin PIN dəyişdi ----------
+function applyV5Updates(list){
+  const k = list.find(p => p.id === 'klinika');
+  if(k && k.adminPassword && k.adminPassword.indexOf('1234') !== -1){
+    k.adminPassword = '1987 (admin PIN)\nStaff PIN-ləri hər işçiyə ayrıca təyin olunub — Admin panelindəki "İşçilər" bölməsindən bax. Yeni işçi əlavə olunanda ona PIN verilməli, yalnız onda "Kimsiniz?" siyahısında görünür.';
+  }
+  return list;
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -510,6 +519,9 @@ function loadData(){
   }
   if(currentVersion < 4){
     projects = applyV4Updates(projects);
+  }
+  if(currentVersion < 5){
+    projects = applyV5Updates(projects);
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
