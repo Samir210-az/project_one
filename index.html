@@ -370,7 +370,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 3;
+const VAULT_VERSION = 4;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -466,7 +466,7 @@ function newEntriesV3(){
     {
       id: 'ferdinet',
       name: 'FerdiNet',
-      url: '',
+      url: 'https://ferdi-net.vercel.app',
       type: 'firebase',
       category: 'Biznes',
       desc: 'Fiber internet provayder saytı — müştəri kabineti (balans/borc/tarixlər), admin panel, avtomatik email bildirişi, sürət testi.',
@@ -474,9 +474,20 @@ function newEntriesV3(){
       adminPassword: '',
       registration: 'Müştərilər "kabinet" bölməsində qeydiyyatdan keçib balans və bağlanma tarixlərini görür.',
       firebase: 'Bu layihənin də ÖZ ayrıca Firebase layihəsi var:\nProject ID: ferdinet-az\nAuth domain: ferdinet-az.firebaseapp.com\nQeyd: real .env.local dəyərləri GitHub-a yüklənməyib (yalnız .env.local.example nümunəsi var) — bu düzgün təhlükəsizlik təcrübəsidir.',
-      notes: 'STATUS: Kod hazırdır, AMMA hələ heç yerdə canlı deploy edilməyib. Next.js layihəsi olduğu üçün GitHub Pages-də İŞLƏMƏZ — Vercel-ə import edib environment variable-ları doldurmaq lazımdır. İstəsən bu addımda kömək edə bilərəm.'
+      notes: 'STATUS: Vercel-də CANLI və işlək (production, READY). Layihə adı Vercel-də "ferdi-net". Digər domenlər: ferdi-net-samir223.vercel.app, ferdi-net-git-main-samir223.vercel.app.'
     }
   ];
+}
+
+// ---------- Migration v4: FerdiNet artıq Vercel-də canlıdır ----------
+function applyV4Updates(list){
+  const fn = list.find(p => p.id === 'ferdinet');
+  if(fn){
+    fn.url = 'https://ferdi-net.vercel.app';
+    fn.adminAccess = '/admin marşrutuna keç, email+parol ilə Firebase Auth girişi tələb olunur. Kodda sabit parol saxlanılmır — hesabı özün Firebase Console-dan yaratmısan.';
+    fn.notes = 'STATUS: Vercel-də CANLI və işlək (production, READY). Layihə adı Vercel-də "ferdi-net". Digər domenlər: ferdi-net-samir223.vercel.app, ferdi-net-git-main-samir223.vercel.app. Node 24.x, Next.js framework avtomatik aşkarlanıb.';
+  }
+  return list;
 }
 
 // ---------- State ----------
@@ -496,6 +507,9 @@ function loadData(){
   }
   if(currentVersion < 3){
     newEntriesV3().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 4){
+    projects = applyV4Updates(projects);
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
