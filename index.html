@@ -370,7 +370,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 2;
+const VAULT_VERSION = 3;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -447,6 +447,38 @@ function newEntriesV2(){
   ];
 }
 
+// ---------- Migration v3: Freelan.az və FerdiNet ----------
+function newEntriesV3(){
+  return [
+    {
+      id: 'freelan',
+      name: 'Freelan.az',
+      url: 'https://samir210-az.github.io/freelan/',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Azərbaycan üçün freelance bazar platforması — iş elanları, təkliflər, mesajlaşma, admin moderasiya paneli.',
+      adminAccess: 'admin.html səhifəsinə keç. Sabit PIN yoxdur — Firebase Auth ilə giriş edib, Firestore-da users/{sənin UID}.role = "admin" olan hesabla daxil olmaq lazımdır.',
+      adminPassword: '',
+      registration: 'İstifadəçi email+parol və ya Google ilə qeydiyyatdan keçir, qeydiyyatda rolunu seçir: müştəri (client) və ya freelancer. Admin rolu koddan verilmir — Firebase Console-dan əl ilə təyin olunur.',
+      firebase: 'DİQQƏT: bu layihənin ÖZ ayrıca Firebase layihəsi var — paylaşılan an-psixoloji-33442 DEYİL.\nProject ID: freelan-8e5b4\nBaza: Firestore (Realtime Database yox)\nCollection-lar: users, jobs, bids, chats, notifications',
+      notes: 'Admin olmaq üçün: Firebase Console → Firestore Database → users → öz UID-in tapılan sənəddə "role" sahəsini "admin" et.'
+    },
+    {
+      id: 'ferdinet',
+      name: 'FerdiNet',
+      url: '',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Fiber internet provayder saytı — müştəri kabineti (balans/borc/tarixlər), admin panel, avtomatik email bildirişi, sürət testi.',
+      adminAccess: '/admin marşrutuna keç, email+parol ilə Firebase Auth girişi tələb olunur. Kodda sabit parol saxlanılmır — hesabı özün Firebase Console-dan yaratmısan.',
+      adminPassword: '',
+      registration: 'Müştərilər "kabinet" bölməsində qeydiyyatdan keçib balans və bağlanma tarixlərini görür.',
+      firebase: 'Bu layihənin də ÖZ ayrıca Firebase layihəsi var:\nProject ID: ferdinet-az\nAuth domain: ferdinet-az.firebaseapp.com\nQeyd: real .env.local dəyərləri GitHub-a yüklənməyib (yalnız .env.local.example nümunəsi var) — bu düzgün təhlükəsizlik təcrübəsidir.',
+      notes: 'STATUS: Kod hazırdır, AMMA hələ heç yerdə canlı deploy edilməyib. Next.js layihəsi olduğu üçün GitHub Pages-də İŞLƏMƏZ — Vercel-ə import edib environment variable-ları doldurmaq lazımdır. İstəsən bu addımda kömək edə bilərəm.'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -458,11 +490,14 @@ function loadData(){
     projects = JSON.parse(localStorage.getItem(LS_DATA) || '[]');
   }catch(e){ projects = []; }
   const currentVersion = parseInt(localStorage.getItem(LS_VERSION) || '1', 10);
+  const existingIds = new Set(projects.map(p=>p.id));
+  if(currentVersion < 2){
+    newEntriesV2().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 3){
+    newEntriesV3().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
   if(currentVersion < VAULT_VERSION){
-    const existingIds = new Set(projects.map(p=>p.id));
-    newEntriesV2().forEach(np=>{
-      if(!existingIds.has(np.id)) projects.push(np);
-    });
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
     saveData();
   }
