@@ -370,7 +370,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 5;
+const VAULT_VERSION = 6;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -499,6 +499,25 @@ function applyV5Updates(list){
   return list;
 }
 
+// ---------- Migration v6: Rus Dili Tədris Platforması əlavə edildi ----------
+function newEntriesV6(){
+  return [
+    {
+      id: 'an-rus-dili',
+      name: 'Rus Dili Tədris Platforması',
+      url: 'https://samir210-az.github.io/an-rus-dili-platform/',
+      type: 'local',
+      category: 'Təhsil',
+      desc: 'AN Mərkəzi üçün rus dili tədris proqramı — Uşaq treki (7-12 yaş, 4 səviyyə) və Yeniyetmə/Böyük treki (CEFR A1-B2), cəmi 120 dərs. Hər dərsdə izah, tələffüz (Web Speech API), ev tapşırığı, test. Dialoq simulyasiyası, səviyyə müəyyənləşdirmə testi, admin/müəllim/şagird panelləri var.',
+      adminAccess: 'Sayt üzərində "Giriş" düyməsinə toxun → "Admin" rolunu seç.',
+      adminPassword: 'admin / AN2026EA',
+      registration: 'Müəllim və şagird hesabları admin paneldən əl ilə yaradılır. Backend/server yoxdur — bütün data (şagirdlər, müəllimlər, test nəticələri, elanlar) browser localStorage-də saxlanılır və cihazdan asılıdır (bulud sinxronizasiyası yoxdur).',
+      firebase: 'Bu layihədə Firebase istifadə olunmur. Dərs məzmunu ayrıca `lessons-data.js` faylında saxlanılır (CHILD_LEVELS, ADULT_LEVELS, DIALOGUES massivləri) — index.html-dən ayrı, redaktəsi asan olsun deyə.',
+      notes: 'sw.js (service worker) "network-first" strategiyası ilə işləyir (v2-dən etibarən) — köhnə keş problemi olmasın deyə. Struktur: Uşaq Səviyyə 1-4 (hər biri 15 dərs) + Böyük A1/A2/B1/B2 (hər biri 15 dərs) = 120 dərs.'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -522,6 +541,9 @@ function loadData(){
   }
   if(currentVersion < 5){
     projects = applyV5Updates(projects);
+  }
+  if(currentVersion < 6){
+    newEntriesV6().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
