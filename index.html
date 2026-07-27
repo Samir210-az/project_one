@@ -333,11 +333,11 @@ function defaultProjects(){
       type: 'firebase',
       category: 'Klinika',
       desc: 'AN Psixoloji Dəstək və Reabilitasiya Mərkəzinin əsas saytı — xəbərlər, işçilər, Haqqımızda.',
-      adminAccess: 'Footer-dəki loqoya 5 dəfə toxun (handleLogoTap funksiyası) → gizli admin girişi açılır.',
-      adminPassword: '',
-      registration: '',
+      adminAccess: 'Footer-dəki (və ya baş loqodakı) loqoya 5 dəfə ardıcıl toxun (hər toxunma arası maks 1.8 saniyə olmalıdır, handleLogoTap funksiyası) → gizli admin girişi açılır.',
+      adminPassword: 'AN2024',
+      registration: 'İctimai qeydiyyat forması yoxdur — bu, tam idarəolunan (xəbər, işçi, haqqımızda) sayta yalnız admin panelindən yazı əlavə etmə imkanı verir.',
       firebase: 'Layihə: an-psixoloji-33442 — xəbərlər, işçi siyahısı və "Haqqımızda" məlumatları buradan idarə olunur.',
-      notes: 'Parolu bura özün əlavə et — yadda saxlanılmayıb.'
+      notes: 'Admin girişi 5-tap + PIN sistemi üzərində qurulub. Panel açılan kimi 4 bölmə görünür: Qeydiyyatlar, Xəbərlər, İşçilər, Haqqımızda.'
     },
     {
       id: 'neurocbt',
@@ -346,11 +346,11 @@ function defaultProjects(){
       type: 'firebase',
       category: 'Klinika',
       desc: 'BAI və BDI testlərini ayrıca aparan psixoloji qiymətləndirmə sistemi, admin təsdiq paneli ilə.',
-      adminAccess: 'Admin panelində istifadəçi təsdiq/rədd/silmə funksiyaları var.',
-      adminPassword: '',
+      adminAccess: 'Giriş ekranında istifadəçi adı + şifrə ilə daxil ol. Admin girişi ilə daxil olanda avtomatik admin panelinə yönləndirilir (istifadəçi təsdiq/rədd/silmə).',
+      adminPassword: 'admin / AN2026',
       registration: 'İstifadəçilər qeydiyyatdan keçir → admin panel təsdiq edənə qədər gözləyir (real-time onValue ilə).',
       firebase: 'Layihə: an-psixoloji-33442\nDatabase path: saas_users/\nBDI sualı 9 (≥2 bal) zamanı kriz xəbərdarlığı avtomatik göstərilir.',
-      notes: 'Parolu bura özün əlavə et.'
+      notes: 'Xəstələr bu proyektdə localStorage-də (cihaz üzrə, hesab başına ayrı açar) saxlanılır — Firebase-də deyil. Test nəticələri (BAI/BDI) indi mərkəzi menyu analitika panelində də görünür.'
     },
     {
       id: 'mekteb',
@@ -359,11 +359,11 @@ function defaultProjects(){
       type: 'local',
       category: 'Təhsil',
       desc: '2 aylıq məktəbəqədər hazırlıq proqramı — admin/müəllim/valideyn rolları ilə.',
-      adminAccess: 'Rol seçimi ilə giriş (admin/teacher/parent).',
-      adminPassword: '',
-      registration: 'Şagird qeydiyyatı admin/müəllim tərəfindən sistem daxilində aparılır.',
+      adminAccess: 'Giriş ekranında istifadəçi adı + şifrə ilə daxil ol — rol avtomatik təyin olunur (admin/müəllim/valideyn).',
+      adminPassword: 'admin / AN2026 (Admin) — muellim / Muellim2026 (Müəllim)',
+      registration: 'Valideyn qeydiyyatı sayt üzərindən özü aparır → sorğu "gözləyən" siyahısına düşür → admin təsdiq edəndən sonra hesabı aktivləşir. Admin və müəllim hesabları isə koda yazılıb (sabitdir).',
       firebase: 'Firebase yoxdur — localStorage ilə saxlanılır (cihazdan asılıdır, bulud sinxronizasiyası yoxdur).',
-      notes: 'Parolu bura özün əlavə et.'
+      notes: 'DİQQƏT: bu layihədə şifrələr açıq mətn şəklində kodda saxlanılır (heç bir hashləmə yoxdur) — brauzerin "View Source" funksiyası ilə görünə bilər. Həssas layihə deyil, amma bilinməlidir.'
     }
   ];
 }
