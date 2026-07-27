@@ -400,7 +400,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: '20 dərslik KBT kursu — panik atak, OKB, depressiya, DEHB, yas terapiyası və s. mövzular.',
       adminAccess: portalNote,
-      adminPassword: '',
+      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AN2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
       registration: portalReg,
       firebase: portalFb('koqnitiv_kurs'),
       notes: portalNotes
@@ -413,7 +413,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: '13 dərslik kurs — aqressiv uşaqlarla iş, kəkələmə, oyun terapiyası növləri, qrup terapiyası.',
       adminAccess: portalNote,
-      adminPassword: '',
+      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AN2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
       registration: portalReg,
       firebase: portalFb('kurs_13'),
       notes: portalNotes
@@ -426,7 +426,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: '15 dərslik kurs — ilkin diaqnostika, autizm/ABA, DEHB, enurez/enkoprez, mutizm, boşanma mövzuları.',
       adminAccess: portalNote,
-      adminPassword: '',
+      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AN2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
       registration: portalReg,
       firebase: portalFb('usaq-psixologiyasi-kursu'),
       notes: portalNotes
@@ -458,7 +458,7 @@ function newEntriesV3(){
       category: 'Biznes',
       desc: 'Azərbaycan üçün freelance bazar platforması — iş elanları, təkliflər, mesajlaşma, admin moderasiya paneli.',
       adminAccess: 'admin.html səhifəsinə keç. Sabit PIN yoxdur — Firebase Auth ilə giriş edib, Firestore-da users/{sənin UID}.role = "admin" olan hesabla daxil olmaq lazımdır.',
-      adminPassword: '',
+      adminPassword: 'BURADA GÖSTƏRİLƏ BİLMƏZ: bu, Firebase Auth (email+parol) hesabıdır və parol heç bir kod faylında saxlanılmır — Firebase parolları hash formatındadır, hətta Firebase Console-da sənə özünə də göstərilmir, yalnız sıfırlana bilər. Hansı email-in admin olduğunu görmək üçün: Firebase Console → Authentication → Users siyahısına bax. Şifrəni unutmusansa, həmin siyahıdan "Reset password" et.',
       registration: 'İstifadəçi email+parol və ya Google ilə qeydiyyatdan keçir, qeydiyyatda rolunu seçir: müştəri (client) və ya freelancer. Admin rolu koddan verilmir — Firebase Console-dan əl ilə təyin olunur.',
       firebase: 'DİQQƏT: bu layihənin ÖZ ayrıca Firebase layihəsi var — paylaşılan an-psixoloji-33442 DEYİL.\nProject ID: freelan-8e5b4\nBaza: Firestore (Realtime Database yox)\nCollection-lar: users, jobs, bids, chats, notifications',
       notes: 'Admin olmaq üçün: Firebase Console → Firestore Database → users → öz UID-in tapılan sənəddə "role" sahəsini "admin" et.'
@@ -471,7 +471,7 @@ function newEntriesV3(){
       category: 'Biznes',
       desc: 'Fiber internet provayder saytı — müştəri kabineti (balans/borc/tarixlər), admin panel, avtomatik email bildirişi, sürət testi.',
       adminAccess: '/admin marşrutuna keç, email+parol ilə Firebase Auth girişi tələb olunur. Kodda sabit parol saxlanılmır — hesabı özün Firebase Console-dan yaratmısan.',
-      adminPassword: '',
+      adminPassword: 'BURADA GÖSTƏRİLƏ BİLMƏZ: eyni səbəb — Firebase Auth parolu heç yerdə (kodda, .env-də) saxlanılmır, geri əldə edilə bilməz. Firebase Console (ferdinet-az layihəsi) → Authentication → Users-dən admin email-i tapıb, lazım olsa "Reset password" et.',
       registration: 'Müştərilər "kabinet" bölməsində qeydiyyatdan keçib balans və bağlanma tarixlərini görür.',
       firebase: 'Bu layihənin də ÖZ ayrıca Firebase layihəsi var:\nProject ID: ferdinet-az\nAuth domain: ferdinet-az.firebaseapp.com\nQeyd: real .env.local dəyərləri GitHub-a yüklənməyib (yalnız .env.local.example nümunəsi var) — bu düzgün təhlükəsizlik təcrübəsidir.',
       notes: 'STATUS: Vercel-də CANLI və işlək (production, READY). Layihə adı Vercel-də "ferdi-net". Digər domenlər: ferdi-net-samir223.vercel.app, ferdi-net-git-main-samir223.vercel.app.'
