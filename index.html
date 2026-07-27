@@ -370,7 +370,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 7;
+const VAULT_VERSION = 8;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -518,6 +518,30 @@ function newEntriesV6(){
   ];
 }
 
+// ---------- Migration v8: boş qalan admin giriş məlumatları dolduruldu ----------
+function applyV8Updates(list){
+  const ansite = list.find(p => p.id === 'ansite');
+  if(ansite){
+    ansite.url = 'https://samir210-az.github.io/site/';
+    ansite.adminPassword = 'AN2024';
+    ansite.registration = 'Sayt üzərindəki "Qeydiyyat" bölməsi ictimai müraciət formasıdır (ad, əlaqə, mesaj) — ziyarətçilər bunu doldurur, admin panelin "Qeydiyyatlar" bölməsindən görüb idarə edir. Ayrıca istifadəçi hesabı yaradılmır, giriş yalnız admin üçündür.';
+    if(ansite.notes && ansite.notes.indexOf('özün əlavə et') !== -1) ansite.notes = 'Firebase project: an-psixoloji-33442. Loqoya 5 dəfə toxunmaqla admin girişi açılır.';
+  }
+  const neuro = list.find(p => p.id === 'neurocbt');
+  if(neuro){
+    neuro.url = 'https://samir210-az.github.io/saas/';
+    neuro.adminPassword = 'İstifadəçi adı: admin\nParol: AN2026';
+    if(neuro.notes && neuro.notes.indexOf('özün əlavə et') !== -1) neuro.notes = 'BDI sualı 9-da (intihara meyl) ≥2 bal olduqda avtomatik kriz xəbərdarlığı göstərilir.';
+  }
+  const mekteb = list.find(p => p.id === 'mekteb');
+  if(mekteb){
+    mekteb.url = 'https://samir210-az.github.io/mektebe-hazirlik/';
+    mekteb.adminPassword = 'Admin: admin / AN2026\nMüəllim (nümunə hesab): muellim / Muellim2026\nQeyd: yeni istifadəçilər sistem daxilində qeydiyyat formasından əlavə olunur.';
+    if(mekteb.notes && mekteb.notes.indexOf('özün əlavə et') !== -1) mekteb.notes = 'Firebase yoxdur — bütün istifadəçi/şagird məlumatı localStorage-də saxlanılır (cihazdan asılıdır).';
+  }
+  return list;
+}
+
 // ---------- Migration v7: menyu Analitika/Statistika Sistemi əlavə edildi ----------
 function newEntriesV7(){
   return [
@@ -566,6 +590,9 @@ function loadData(){
   }
   if(currentVersion < 7){
     newEntriesV7().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 8){
+    projects = applyV8Updates(projects);
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
