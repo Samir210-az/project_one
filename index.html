@@ -370,7 +370,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 6;
+const VAULT_VERSION = 7;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -518,6 +518,25 @@ function newEntriesV6(){
   ];
 }
 
+// ---------- Migration v7: menyu Analitika/Statistika Sistemi əlavə edildi ----------
+function newEntriesV7(){
+  return [
+    {
+      id: 'menyu-analitika',
+      name: 'menyu — Daxili Analitika / Statistika Paneli',
+      url: 'https://samir210-az.github.io/menyu/',
+      type: 'local',
+      category: 'Sistem',
+      desc: 'Mərkəzi layihələr launcher-i (menyu) üzərində qurulmuş daxili izləmə sistemi. Bütün AN Psixoloji + kommersiya proyektlərində (48 repo) səhifə baxışları, layihə keçidləri, klinik/təhsil test nəticələri (yekun bal/nəticə) və yeni qeydlər (pasiyent, əməkdaş və s. ad-familiya ilə) mərkəzi Firebase bazasına yazılır və gizli admin paneldə göstərilir.',
+      adminAccess: 'menyu əsas səhifəsində SG loqosuna 2.5 saniyə basıb saxla → gizli statistika paneli (sg-insight-x92q.html) açılır. Bu link heç bir düymə/menyu elementində görünmür, yalnız bu gizli hərəkətlə açılır.',
+      adminPassword: 'menyu əsas girişi: mövcud əsas PIN (dəyişməyib). Gizli statistika paneli: AN2026EA (əsas menyu PIN-indən tam ayrı, müstəqil açardır). Hər iki giriş artıq localStorage-də yadda saxlanmır — hər dəfə mütləq yenidən soruşulur.',
+      registration: 'İstifadəçi qeydiyyatı yoxdur — bu, yalnız admin/sahib üçün daxili izləmə sistemidir. Ziyarətçilər heç nə görmür, heç bir icazə pəncərəsi çıxmır (səssiz IP-əsaslı ərazi təyini istifadə olunur).',
+      firebase: 'Firebase project: an-psixoloji-33442 (mövcud əsas layihə ilə eyni). Realtime Database path: menyu_analytics/events (bütün hadisələr), menyu_analytics/ip_labels (IP → ad etiketləri). Anonim Authentication (Anonymous) aktivdir. Rules-da menyu_analytics node-u əlavə olunub: ".read"/".write": "auth != null".',
+      notes: 'Paylaşılan skript: samir210-az.github.io/menyu/analytics.js — hər proyektə bir sətirlik <script type="module"> əlavəsi ilə qoşulur, `window.sgTrackTest(testAdı, nəticə)` və `window.sgTrackRecord(əməliyyat, növ, ad)` funksiyaları vasitəsilə test nəticələri və yeni qeydlər izlənir. Köhnə qeydlər 3 gündən sonra avtomatik silinir (RETENTION_DAYS=3, panel açılanda işə düşür). Panelə daxil olub istənilən IP-nin üstünə basaraq ona ad təyin etmək mümkündür (məs: "Samir", "Nahidə xanım") — bir dəfə edəndə bütün cihazlarda yadda qalır. İzlənən proyektlər: menyu, Klinika Sistemi, ABA Terapiya (6 alət), UşaqIQ, NeuroCBT (BAI/BDI), SCARED, Denver II (goog+denever), M-CHAT-R, Rus Dili Platforması, Kurs Portalı, Səsim və 25+ digər proyekt. İzlənməyən: an-qiymetlendirme-sistemi (toxunulmayıb), AN Valideyn Akademiyası və FerdiNet (Next.js/Vercel, fərqli inteqrasiya tələb edir).'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -544,6 +563,9 @@ function loadData(){
   }
   if(currentVersion < 6){
     newEntriesV6().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 7){
+    newEntriesV7().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
