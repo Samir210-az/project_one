@@ -370,7 +370,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 8;
+const VAULT_VERSION = 9;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -561,6 +561,25 @@ function newEntriesV7(){
   ];
 }
 
+// ---------- Migration v9: Elektronika.az əlavə edildi ----------
+function newEntriesV9(){
+  return [
+    {
+      id: 'elektronika',
+      name: 'Elektronika.az',
+      url: 'https://elektronika-az.vercel.app/',
+      type: 'local',
+      category: 'Biznes',
+      desc: 'Elektron məhsulların satışı üçün PWA sayt — canvas portal+zərrəcik animasiyalı hero, məhsul kataloqu (şəkil/video, stok statusu), WhatsApp üzərindən sifariş, pulsuz çatdırılma.',
+      adminAccess: 'Header-dəki loqoya sürətli 5 dəfə klik et → gizli /admin səhifəsinə yönləndirilir. Naviqasiyada, footer-də heç bir görünən link yoxdur, axtarış motorlarından da gizlədilib (robots.txt Disallow + noindex meta).',
+      adminPassword: 'AN2026EA',
+      registration: 'Müştəri qeydiyyatı yoxdur. Sifariş axını: səbətə əlavə et → ad/telefon/ünvan yaz → WhatsApp-a (+994 55 210 71 11) hazır mətnli sifariş mesajı avtomatik açılır. Ödəniş WhatsApp üzərində kart-to-kart, admin əl ilə "Təsdiqləndi" statusuna keçirir.',
+      firebase: 'Firebase istifadə olunmur. Bütün data (məhsullar, sifarişlər, admin sessiyası, səbət) browser localStorage-də saxlanılır — cihazdan asılıdır, çoxcihazlı sinxronizasiya yoxdur. Gələcəkdə Supabase (pulsuz plan) qoşulub bütün cihazlarda paylaşılan admin panelinə keçmək planlaşdırılıb.',
+      notes: 'Stack: Next.js 15 (App Router) + Tailwind v4 + Framer Motion + next-pwa. Tam PWA (manifest + service worker), "Tətbiqi yüklə" düyməsi həm footer-də, həm avtomatik bannerdə var. Hero-da orijinal canvas animasiyası (portal halqası + fantan-tipli zərrəciklər). GitHub: github.com/Samir210-az/elektronika. Vercel: team "Samir" (samir223), layihə adı "elektronika-az".'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -593,6 +612,9 @@ function loadData(){
   }
   if(currentVersion < 8){
     projects = applyV8Updates(projects);
+  }
+  if(currentVersion < 9){
+    newEntriesV9().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
