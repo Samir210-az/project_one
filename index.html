@@ -370,7 +370,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 9;
+const VAULT_VERSION = 10;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -580,6 +580,51 @@ function newEntriesV9(){
   ];
 }
 
+// ---------- Migration v10: 366 AUTO, Ferdi Reabilitasiya Plani, Valideyn Belədcisi elave edildi ----------
+function newEntriesV10(){
+  return [
+    {
+      id: 'car366',
+      name: '366 AUTO',
+      url: 'https://car366.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Avtomobil ehtiyat hissələri satışı üçün idarəetmə platforması — VIN kodu ilə axtarış, real-time inventar, satış, təchizatçı/maliyyə/işçi/vergi/borc idarəetməsi, PWA.',
+      adminAccess: 'Sayta girişdə tək bir PIN tələb olunur — ayrıca admin/istifadəçi rolu yoxdur, bütün tətbiq bir giriş arxasındadır (lockScreen).',
+      adminPassword: 'CAR366HA (app.js faylında CAR366_PIN sabiti kimi saxlanılır, PIN sessionStorage-də "car366_unlocked" açarı ilə yadda qalır)',
+      registration: 'İctimai qeydiyyat yoxdur — tək istifadəçili (sahibkar) daxili idarəetmə tətbiqidir.',
+      firebase: 'Layihə: an-psixoloji-33442\nDatabase path: car366/\nAlt-collection-lar: products, suppliers, purchases, sales, finance, employees, taxes, debts, customers\nAnonim autentifikasiya (Rules "auth != null" tələb edir, görünməz signInAnonymously ilə).',
+      notes: 'GitHub: github.com/Samir210-az/car (repo adı "car", Vercel domain "car366.vercel.app" — homepage sahəsindən tapılıb). PWA 05.08.2026-da tamamlandı: manifest.json + sw.js (offline keş) + sol-aşağı "Quraşdır" düyməsi (sağdakı "Yeni Satış" FAB-ı ilə toqquşmasın deyə).'
+    },
+    {
+      id: 'plan',
+      name: 'Fərdi Reabilitasiya Planı Generatoru',
+      url: 'https://samir210-az.github.io/plan/',
+      type: 'local',
+      category: 'Klinika',
+      desc: 'AN Mərkəzi üçün fərdi reabilitasiya planı hazırlayan generator aləti.',
+      adminAccess: 'Bu layihədə ayrıca admin paneli / giriş qoruması yoxdur — açıq, birbaşa istifadə olunan alətdir.',
+      adminPassword: '',
+      registration: 'Qeydiyyat tələb olunmur.',
+      firebase: 'Firebase istifadə olunmur — data browser localStorage-də saxlanılır (cihazdan asılıdır).',
+      notes: 'Repo 04.08.2026-da yaradılıb, hələ yeni. "Valideyn Reabilitasiya Bələdçisi" (plan-valideyn) ilə cütdür.'
+    },
+    {
+      id: 'plan-valideyn',
+      name: 'Valideyn Reabilitasiya Bələdçisi',
+      url: 'https://samir210-az.github.io/plan-valideyn/',
+      type: 'local',
+      category: 'Klinika',
+      desc: 'Valideynlər üçün uşağın reabilitasiya prosesində bələdçi/təlimat aləti.',
+      adminAccess: 'Bu layihədə ayrıca admin paneli / giriş qoruması yoxdur — açıq, birbaşa istifadə olunan alətdir.',
+      adminPassword: '',
+      registration: 'Qeydiyyat tələb olunmur.',
+      firebase: 'Firebase istifadə olunmur — data browser localStorage-də saxlanılır (cihazdan asılıdır).',
+      notes: 'Repo 04.08.2026-da yaradılıb, hələ yeni. "Fərdi Reabilitasiya Planı Generatoru" (plan) layihəsini tamamlayır.'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -615,6 +660,9 @@ function loadData(){
   }
   if(currentVersion < 9){
     newEntriesV9().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 10){
+    newEntriesV10().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
