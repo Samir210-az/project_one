@@ -387,7 +387,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: 'Bütün kurslar üçün vahid giriş nöqtəsi — istifadəçi burada login olur, admin ona kurs icazələri verir.',
       adminAccess: 'Sayt Firebase Auth ilə işləyir — admin hesabı ilə giriş et (aşağıdakı email/parolla). Admin UID-i Firebase-də portal/admins altında true olmalıdır.',
-      adminPassword: 'admin@portal.com / AN2026EA',
+      adminPassword: 'admin@portal.com / AL2026EA',
       registration: 'Yeni istifadəçi email+parol ilə qeydiyyatdan keçir → Firebase Auth-da hesab yaranır → admin ona portal/customers/{uid}/allowedCourses siyahısında kurs(lar) təyin edir.',
       firebase: 'Layihə: an-psixoloji-33442\nPath-lar: portal/admins, portal/customers, portal/courses\n"nuke.html" adlı təhlükəli təmizləmə səhifəsi var — ehtiyatlı istifadə et.',
       notes: 'Bütün 3 kurs (aşağıda) giriş üçün bu portala bağlıdır — buradan icazə vermədən heç bir kurs açılmır.'
@@ -400,7 +400,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: '20 dərslik KBT kursu — panik atak, OKB, depressiya, DEHB, yas terapiyası və s. mövzular.',
       adminAccess: portalNote,
-      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AN2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
+      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AL2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
       registration: portalReg,
       firebase: portalFb('koqnitiv_kurs'),
       notes: portalNotes
@@ -413,7 +413,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: '13 dərslik kurs — aqressiv uşaqlarla iş, kəkələmə, oyun terapiyası növləri, qrup terapiyası.',
       adminAccess: portalNote,
-      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AN2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
+      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AL2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
       registration: portalReg,
       firebase: portalFb('kurs_13'),
       notes: portalNotes
@@ -426,7 +426,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: '15 dərslik kurs — ilkin diaqnostika, autizm/ABA, DEHB, enurez/enkoprez, mutizm, boşanma mövzuları.',
       adminAccess: portalNote,
-      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AN2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
+      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AL2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
       registration: portalReg,
       firebase: portalFb('usaq-psixologiyasi-kursu'),
       notes: portalNotes
@@ -439,7 +439,7 @@ function newEntriesV2(){
       category: 'Klinika',
       desc: '6 qiymətləndirmə aləti (VB-MAPP, ABLLS-R, AFLS, FBA, Vineland-3, PEAK) və fərdi proqram generatoru.',
       adminAccess: 'admin.html səhifəsinə keç → PIN daxil et. Bu panel qeydiyyatdan keçənlərin siyahısını göstərir.',
-      adminPassword: 'AN2026EA',
+      adminPassword: 'AL2026EA',
       registration: 'İstifadəçilər sayt üzərindən qiymətləndirmə/proqram sorğusu göndərir, qeydlər Firebase-ə yazılır və admin.html-də siyahı kimi görünür.',
       firebase: 'Layihə: an-psixoloji-33442\nPath: aba_terapiya/registrations',
       notes: 'Diqqət: bu platformadakı test maddələri real standartlaşdırılmış alətlərlə (VB-MAPP və s.) tam üst-üstə düşmür — memory-ə görə mütəxəssislərin əsl mətnlərlə doldurması planlaşdırılıb, hələ tam bitməyib.'
@@ -510,7 +510,7 @@ function newEntriesV6(){
       category: 'Təhsil',
       desc: 'AN Mərkəzi üçün rus dili tədris proqramı — Uşaq treki (7-12 yaş, 4 səviyyə) və Yeniyetmə/Böyük treki (CEFR A1-B2), cəmi 120 dərs. Hər dərsdə izah, tələffüz (Web Speech API), ev tapşırığı, test. Dialoq simulyasiyası, səviyyə müəyyənləşdirmə testi, admin/müəllim/şagird panelləri var.',
       adminAccess: 'Sayt üzərində "Giriş" düyməsinə toxun → "Admin" rolunu seç.',
-      adminPassword: 'admin / AN2026EA',
+      adminPassword: 'admin / AL2026EA',
       registration: 'Müəllim və şagird hesabları admin paneldən əl ilə yaradılır. Backend/server yoxdur — bütün data (şagirdlər, müəllimlər, test nəticələri, elanlar) browser localStorage-də saxlanılır və cihazdan asılıdır (bulud sinxronizasiyası yoxdur).',
       firebase: 'Bu layihədə Firebase istifadə olunmur. Dərs məzmunu ayrıca `lessons-data.js` faylında saxlanılır (CHILD_LEVELS, ADULT_LEVELS, DIALOGUES massivləri) — index.html-dən ayrı, redaktəsi asan olsun deyə.',
       notes: 'sw.js (service worker) "network-first" strategiyası ilə işləyir (v2-dən etibarən) — köhnə keş problemi olmasın deyə. Struktur: Uşaq Səviyyə 1-4 (hər biri 15 dərs) + Böyük A1/A2/B1/B2 (hər biri 15 dərs) = 120 dərs.'
@@ -553,7 +553,7 @@ function newEntriesV7(){
       category: 'Sistem',
       desc: 'Mərkəzi layihələr launcher-i (menyu) üzərində qurulmuş daxili izləmə sistemi. Bütün AN Psixoloji + kommersiya proyektlərində (48 repo) səhifə baxışları, layihə keçidləri, klinik/təhsil test nəticələri (yekun bal/nəticə) və yeni qeydlər (pasiyent, əməkdaş və s. ad-familiya ilə) mərkəzi Firebase bazasına yazılır və gizli admin paneldə göstərilir.',
       adminAccess: 'menyu əsas səhifəsində SG loqosuna 2.5 saniyə basıb saxla → gizli statistika paneli (sg-insight-x92q.html) açılır. Bu link heç bir düymə/menyu elementində görünmür, yalnız bu gizli hərəkətlə açılır.',
-      adminPassword: 'menyu əsas girişi: mövcud əsas PIN (dəyişməyib). Gizli statistika paneli: AN2026EA (əsas menyu PIN-indən tam ayrı, müstəqil açardır). Hər iki giriş artıq localStorage-də yadda saxlanmır — hər dəfə mütləq yenidən soruşulur.',
+      adminPassword: 'menyu əsas girişi: mövcud əsas PIN (dəyişməyib). Gizli statistika paneli: AL2026EA (əsas menyu PIN-indən tam ayrı, müstəqil açardır). Hər iki giriş artıq localStorage-də yadda saxlanmır — hər dəfə mütləq yenidən soruşulur.',
       registration: 'İstifadəçi qeydiyyatı yoxdur — bu, yalnız admin/sahib üçün daxili izləmə sistemidir. Ziyarətçilər heç nə görmür, heç bir icazə pəncərəsi çıxmır (səssiz IP-əsaslı ərazi təyini istifadə olunur).',
       firebase: 'Firebase project: an-psixoloji-33442 (mövcud əsas layihə ilə eyni). Realtime Database path: menyu_analytics/events (bütün hadisələr), menyu_analytics/ip_labels (IP → ad etiketləri). Anonim Authentication (Anonymous) aktivdir. Rules-da menyu_analytics node-u əlavə olunub: ".read"/".write": "auth != null".',
       notes: 'Paylaşılan skript: samir210-az.github.io/menyu/analytics.js — hər proyektə bir sətirlik <script type="module"> əlavəsi ilə qoşulur, `window.sgTrackTest(testAdı, nəticə)` və `window.sgTrackRecord(əməliyyat, növ, ad)` funksiyaları vasitəsilə test nəticələri və yeni qeydlər izlənir. Köhnə qeydlər 3 gündən sonra avtomatik silinir (RETENTION_DAYS=3, panel açılanda işə düşür). Panelə daxil olub istənilən IP-nin üstünə basaraq ona ad təyin etmək mümkündür (məs: "Samir", "Nahidə xanım") — bir dəfə edəndə bütün cihazlarda yadda qalır. Cəmi 37 proyektə qoşulub: menyu, Klinika Sistemi, ABA Terapiya (6 alət: VB-MAPP/ABLLS-R/AFLS/FBA/Vineland-3/PEAK), UşaqIQ, NeuroCBT (BAI/BDI), SCARED (cbt), Denver II (goog), Denver Arxiv (denever), M-CHAT-R, Rus Dili Platforması, AN Kurs Portalı, Səsim, AN Mərkəz (site), Məktəbə Hazırlıq, Promt.AI, AN Mərkəz Yeni (an-merkezi), Erkən İnkişaf (TEST), Erkən Müdaxilə, AN Paketlər, AN Demo, TTAP (AN), AN Agent (-agent), Netlify versiyası, Klinika Demo B2B, Koqnitiv Kurs, Kurs 13, Uşaq Psixologiyası Kursu, Freelan.az, Meyan İdarəetmə, MEYANPARFUM, Arıqlama (saglam), Test Kataloqu (Esas), Preyskursant Pro (press), Özəl Su (ozelsu), CV Generator, Market POS, Gözəllik Salonu (Satis). İzlənməyən: an-qiymetlendirme-sistemi (toxunulmayıb — do-not-touch), AN Valideyn Akademiyası və FerdiNet (Next.js/Vercel, fərqli inteqrasiya tələb edir, hələ edilməyib).'
@@ -572,7 +572,7 @@ function newEntriesV9(){
       category: 'Biznes',
       desc: 'Elektron məhsulların satışı üçün PWA sayt — canvas portal+zərrəcik animasiyalı hero, məhsul kataloqu (şəkil/video, stok statusu), WhatsApp üzərindən sifariş, pulsuz çatdırılma.',
       adminAccess: 'Header-dəki loqoya sürətli 5 dəfə klik et → gizli /admin səhifəsinə yönləndirilir. Naviqasiyada, footer-də heç bir görünən link yoxdur, axtarış motorlarından da gizlədilib (robots.txt Disallow + noindex meta).',
-      adminPassword: 'AN2026EA',
+      adminPassword: 'AL2026EA',
       registration: 'Müştəri qeydiyyatı yoxdur. Sifariş axını: səbətə əlavə et → ad/telefon/ünvan yaz → WhatsApp-a (+994 55 210 71 11) hazır mətnli sifariş mesajı avtomatik açılır. Ödəniş WhatsApp üzərində kart-to-kart, admin əl ilə "Təsdiqləndi" statusuna keçirir.',
       firebase: 'Firebase istifadə olunmur. Bütün data (məhsullar, sifarişlər, admin sessiyası, səbət) browser localStorage-də saxlanılır — cihazdan asılıdır, çoxcihazlı sinxronizasiya yoxdur. Gələcəkdə Supabase (pulsuz plan) qoşulub bütün cihazlarda paylaşılan admin panelinə keçmək planlaşdırılıb.',
       notes: 'Stack: Next.js 15 (App Router) + Tailwind v4 + Framer Motion + next-pwa. Tam PWA (manifest + service worker), "Tətbiqi yüklə" düyməsi həm footer-də, həm avtomatik bannerdə var. Hero-da orijinal canvas animasiyası (portal halqası + fantan-tipli zərrəciklər). GitHub: github.com/Samir210-az/elektronika. Vercel: team "Samir" (samir223), layihə adı "elektronika-az".'
