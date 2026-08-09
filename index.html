@@ -370,7 +370,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 11;
+const VAULT_VERSION = 12;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -387,7 +387,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: 'Bütün kurslar üçün vahid giriş nöqtəsi — istifadəçi burada login olur, admin ona kurs icazələri verir.',
       adminAccess: 'Sayt Firebase Auth ilə işləyir — admin hesabı ilə giriş et (aşağıdakı email/parolla). Admin UID-i Firebase-də portal/admins altında true olmalıdır.',
-      adminPassword: 'admin@portal.com / AL2026EA',
+      adminPassword: 'admin@portal.com / AN2026EA',
       registration: 'Yeni istifadəçi email+parol ilə qeydiyyatdan keçir → Firebase Auth-da hesab yaranır → admin ona portal/customers/{uid}/allowedCourses siyahısında kurs(lar) təyin edir.',
       firebase: 'Layihə: an-psixoloji-33442\nPath-lar: portal/admins, portal/customers, portal/courses\n"nuke.html" adlı təhlükəli təmizləmə səhifəsi var — ehtiyatlı istifadə et.',
       notes: 'Bütün 3 kurs (aşağıda) giriş üçün bu portala bağlıdır — buradan icazə vermədən heç bir kurs açılmır.'
@@ -400,7 +400,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: '20 dərslik KBT kursu — panik atak, OKB, depressiya, DEHB, yas terapiyası və s. mövzular.',
       adminAccess: portalNote,
-      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AL2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
+      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AN2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
       registration: portalReg,
       firebase: portalFb('koqnitiv_kurs'),
       notes: portalNotes
@@ -413,7 +413,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: '13 dərslik kurs — aqressiv uşaqlarla iş, kəkələmə, oyun terapiyası növləri, qrup terapiyası.',
       adminAccess: portalNote,
-      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AL2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
+      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AN2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
       registration: portalReg,
       firebase: portalFb('kurs_13'),
       notes: portalNotes
@@ -426,7 +426,7 @@ function newEntriesV2(){
       category: 'Kurslar',
       desc: '15 dərslik kurs — ilkin diaqnostika, autizm/ABA, DEHB, enurez/enkoprez, mutizm, boşanma mövzuları.',
       adminAccess: portalNote,
-      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AL2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
+      adminPassword: 'AYRICA PAROL YOXDUR — "AN Kurs Portalı"-nda admin@portal.com / AN2026EA ilə giriş etdikdə bu kursa da avtomatik admin girişi əldə edilir.',
       registration: portalReg,
       firebase: portalFb('usaq-psixologiyasi-kursu'),
       notes: portalNotes
@@ -439,7 +439,7 @@ function newEntriesV2(){
       category: 'Klinika',
       desc: '6 qiymətləndirmə aləti (VB-MAPP, ABLLS-R, AFLS, FBA, Vineland-3, PEAK) və fərdi proqram generatoru.',
       adminAccess: 'admin.html səhifəsinə keç → PIN daxil et. Bu panel qeydiyyatdan keçənlərin siyahısını göstərir.',
-      adminPassword: 'AL2026EA',
+      adminPassword: 'AN2026EA',
       registration: 'İstifadəçilər sayt üzərindən qiymətləndirmə/proqram sorğusu göndərir, qeydlər Firebase-ə yazılır və admin.html-də siyahı kimi görünür.',
       firebase: 'Layihə: an-psixoloji-33442\nPath: aba_terapiya/registrations',
       notes: 'Diqqət: bu platformadakı test maddələri real standartlaşdırılmış alətlərlə (VB-MAPP və s.) tam üst-üstə düşmür — memory-ə görə mütəxəssislərin əsl mətnlərlə doldurması planlaşdırılıb, hələ tam bitməyib.'
@@ -510,7 +510,7 @@ function newEntriesV6(){
       category: 'Təhsil',
       desc: 'AN Mərkəzi üçün rus dili tədris proqramı — Uşaq treki (7-12 yaş, 4 səviyyə) və Yeniyetmə/Böyük treki (CEFR A1-B2), cəmi 120 dərs. Hər dərsdə izah, tələffüz (Web Speech API), ev tapşırığı, test. Dialoq simulyasiyası, səviyyə müəyyənləşdirmə testi, admin/müəllim/şagird panelləri var.',
       adminAccess: 'Sayt üzərində "Giriş" düyməsinə toxun → "Admin" rolunu seç.',
-      adminPassword: 'admin / AL2026EA',
+      adminPassword: 'admin / AN2026EA',
       registration: 'Müəllim və şagird hesabları admin paneldən əl ilə yaradılır. Backend/server yoxdur — bütün data (şagirdlər, müəllimlər, test nəticələri, elanlar) browser localStorage-də saxlanılır və cihazdan asılıdır (bulud sinxronizasiyası yoxdur).',
       firebase: 'Bu layihədə Firebase istifadə olunmur. Dərs məzmunu ayrıca `lessons-data.js` faylında saxlanılır (CHILD_LEVELS, ADULT_LEVELS, DIALOGUES massivləri) — index.html-dən ayrı, redaktəsi asan olsun deyə.',
       notes: 'sw.js (service worker) "network-first" strategiyası ilə işləyir (v2-dən etibarən) — köhnə keş problemi olmasın deyə. Struktur: Uşaq Səviyyə 1-4 (hər biri 15 dərs) + Böyük A1/A2/B1/B2 (hər biri 15 dərs) = 120 dərs.'
@@ -553,7 +553,7 @@ function newEntriesV7(){
       category: 'Sistem',
       desc: 'Mərkəzi layihələr launcher-i (menyu) üzərində qurulmuş daxili izləmə sistemi. Bütün AN Psixoloji + kommersiya proyektlərində (48 repo) səhifə baxışları, layihə keçidləri, klinik/təhsil test nəticələri (yekun bal/nəticə) və yeni qeydlər (pasiyent, əməkdaş və s. ad-familiya ilə) mərkəzi Firebase bazasına yazılır və gizli admin paneldə göstərilir.',
       adminAccess: 'menyu əsas səhifəsində SG loqosuna 2.5 saniyə basıb saxla → gizli statistika paneli (sg-insight-x92q.html) açılır. Bu link heç bir düymə/menyu elementində görünmür, yalnız bu gizli hərəkətlə açılır.',
-      adminPassword: 'menyu əsas girişi: mövcud əsas PIN (dəyişməyib). Gizli statistika paneli: AL2026EA (əsas menyu PIN-indən tam ayrı, müstəqil açardır). Hər iki giriş artıq localStorage-də yadda saxlanmır — hər dəfə mütləq yenidən soruşulur.',
+      adminPassword: 'menyu əsas girişi: mövcud əsas PIN (dəyişməyib). Gizli statistika paneli: AN2026EA (əsas menyu PIN-indən tam ayrı, müstəqil açardır). Hər iki giriş artıq localStorage-də yadda saxlanmır — hər dəfə mütləq yenidən soruşulur.',
       registration: 'İstifadəçi qeydiyyatı yoxdur — bu, yalnız admin/sahib üçün daxili izləmə sistemidir. Ziyarətçilər heç nə görmür, heç bir icazə pəncərəsi çıxmır (səssiz IP-əsaslı ərazi təyini istifadə olunur).',
       firebase: 'Firebase project: an-psixoloji-33442 (mövcud əsas layihə ilə eyni). Realtime Database path: menyu_analytics/events (bütün hadisələr), menyu_analytics/ip_labels (IP → ad etiketləri). Anonim Authentication (Anonymous) aktivdir. Rules-da menyu_analytics node-u əlavə olunub: ".read"/".write": "auth != null".',
       notes: 'Paylaşılan skript: samir210-az.github.io/menyu/analytics.js — hər proyektə bir sətirlik <script type="module"> əlavəsi ilə qoşulur, `window.sgTrackTest(testAdı, nəticə)` və `window.sgTrackRecord(əməliyyat, növ, ad)` funksiyaları vasitəsilə test nəticələri və yeni qeydlər izlənir. Köhnə qeydlər 3 gündən sonra avtomatik silinir (RETENTION_DAYS=3, panel açılanda işə düşür). Panelə daxil olub istənilən IP-nin üstünə basaraq ona ad təyin etmək mümkündür (məs: "Samir", "Nahidə xanım") — bir dəfə edəndə bütün cihazlarda yadda qalır. Cəmi 37 proyektə qoşulub: menyu, Klinika Sistemi, ABA Terapiya (6 alət: VB-MAPP/ABLLS-R/AFLS/FBA/Vineland-3/PEAK), UşaqIQ, NeuroCBT (BAI/BDI), SCARED (cbt), Denver II (goog), Denver Arxiv (denever), M-CHAT-R, Rus Dili Platforması, AN Kurs Portalı, Səsim, AN Mərkəz (site), Məktəbə Hazırlıq, Promt.AI, AN Mərkəz Yeni (an-merkezi), Erkən İnkişaf (TEST), Erkən Müdaxilə, AN Paketlər, AN Demo, TTAP (AN), AN Agent (-agent), Netlify versiyası, Klinika Demo B2B, Koqnitiv Kurs, Kurs 13, Uşaq Psixologiyası Kursu, Freelan.az, Meyan İdarəetmə, MEYANPARFUM, Arıqlama (saglam), Test Kataloqu (Esas), Preyskursant Pro (press), Özəl Su (ozelsu), CV Generator, Market POS, Gözəllik Salonu (Satis). İzlənməyən: an-qiymetlendirme-sistemi (toxunulmayıb — do-not-touch), AN Valideyn Akademiyası və FerdiNet (Next.js/Vercel, fərqli inteqrasiya tələb edir, hələ edilməyib).'
@@ -572,7 +572,7 @@ function newEntriesV9(){
       category: 'Biznes',
       desc: 'Elektron məhsulların satışı üçün PWA sayt — canvas portal+zərrəcik animasiyalı hero, məhsul kataloqu (şəkil/video, stok statusu), WhatsApp üzərindən sifariş, pulsuz çatdırılma.',
       adminAccess: 'Header-dəki loqoya sürətli 5 dəfə klik et → gizli /admin səhifəsinə yönləndirilir. Naviqasiyada, footer-də heç bir görünən link yoxdur, axtarış motorlarından da gizlədilib (robots.txt Disallow + noindex meta).',
-      adminPassword: 'AL2026EA',
+      adminPassword: 'AN2026EA',
       registration: 'Müştəri qeydiyyatı yoxdur. Sifariş axını: səbətə əlavə et → ad/telefon/ünvan yaz → WhatsApp-a (+994 55 210 71 11) hazır mətnli sifariş mesajı avtomatik açılır. Ödəniş WhatsApp üzərində kart-to-kart, admin əl ilə "Təsdiqləndi" statusuna keçirir.',
       firebase: 'Firebase istifadə olunmur. Bütün data (məhsullar, sifarişlər, admin sessiyası, səbət) browser localStorage-də saxlanılır — cihazdan asılıdır, çoxcihazlı sinxronizasiya yoxdur. Gələcəkdə Supabase (pulsuz plan) qoşulub bütün cihazlarda paylaşılan admin panelinə keçmək planlaşdırılıb.',
       notes: 'Stack: Next.js 15 (App Router) + Tailwind v4 + Framer Motion + next-pwa. Tam PWA (manifest + service worker), "Tətbiqi yüklə" düyməsi həm footer-də, həm avtomatik bannerdə var. Hero-da orijinal canvas animasiyası (portal halqası + fantan-tipli zərrəciklər). GitHub: github.com/Samir210-az/elektronika. Vercel: team "Samir" (samir223), layihə adı "elektronika-az".'
@@ -599,7 +599,164 @@ function newEntriesV10(){
   ];
 }
 
-// ---------- Migration v11: qayda deyisdi — parolsuz (acıq) layiheler seyfe elave olunmur ----------
+// ---------- Migration v12: Repetitor modelli qeydiyyat sistemi bütün psixoloji test alətlərinə yayıldı ----------
+// Telefon+PIN qeydiyyatı → SuperAdmin (5-tap loqo + PIN AL2026EA) təsdiqi + WhatsApp aktivləşdirmə düyməsi.
+// "plan" və "plan-valideyn" indi qorunma aldığı üçün (V11-də çıxarılmışdılar) seyfə geri qaytarılır.
+function newEntriesV12(){
+  return [
+    {
+      id: 'denever',
+      name: 'Denver II — Arxiv versiyası',
+      url: 'https://samir210-az.github.io/denever/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'Denver II İnkişaf Testi, keçirilmiş testlərin arxivlənməsi funksiyası ilə.',
+      adminAccess: 'Başlıqdakı (h1) mətnə 5 dəfə ardıcıl toxun → admin.html açılır → PIN daxil et.',
+      adminPassword: 'AL2026EA',
+      registration: 'Telefon+PIN ilə özü qeydiyyatdan keçir (Repetitor modeli). Sual seçimlərinə və ya "Analiz et" düyməsinə toxunanda qapı açılır. Təsdiqlənməyənə qədər "Gözləyir" ekranında WhatsApp düyməsi görünür.',
+      firebase: 'Layihə: an-psixoloji-33442\\nDatabase path: registrations/denever/',
+      notes: 'Əvvəllər köhnə statik-açar (LICENSE_DB, licenses-data.js) sistemi var idi, tam əvəz olundu. Əsas hesablama məntiqi XOR-şifrələnmişdir (data.js/index.html daxilində), ona toxunulmadı — yalnız üstünə qapı əlavə olundu.'
+    },
+    {
+      id: 'goog',
+      name: 'Denver II — Google Cədvəl versiyası',
+      url: 'https://samir210-az.github.io/goog/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'Denver II İnkişaf Testi, Google Cədvəl arxivi ilə inteqrasiya olunmuş versiya (120+ maddə).',
+      adminAccess: 'Başlıqdakı (h1) mətnə 5 dəfə ardıcıl toxun → admin.html açılır → PIN daxil et.',
+      adminPassword: 'AL2026EA',
+      registration: 'Telefon+PIN ilə özü qeydiyyatdan keçir. "Yadda saxla" düyməsinə toxunanda qapı açılır.',
+      firebase: 'Layihə: an-psixoloji-33442\\nDatabase path: registrations/goog/',
+      notes: 'Denever ilə eyni köhnə açar sistemi əvəz olundu. Daha böyük (38k simvol) XOR-şifrələnmiş məntiqə malikdir, toxunulmadı.'
+    },
+    {
+      id: 'plan',
+      name: 'Fərdi Reabilitasiya Planı',
+      url: 'https://samir210-az.github.io/plan/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'AN Mərkəzi üçün 30/90 günlük fərdi reabilitasiya planı generatoru (Klinik Psixoloq, Loqoped, Erqoterapevt, Psixopedaqoq, Valideyn bölmələri).',
+      adminAccess: 'Başlıqdakı "AN Psixoloji Dəstək və Reabilitasiya Mərkəzi" yazısına 5 dəfə toxun → admin.html → PIN.',
+      adminPassword: 'AL2026EA',
+      registration: 'Qiymətləndirmə formu sərbəst doldurulur, "✨ PLANI HAZIRLA" düyməsinə basanda telefon+PIN qeydiyyatı/SuperAdmin təsdiqi tələb olunur.',
+      firebase: 'Layihə: an-psixoloji-33442\\nDatabase path: registrations/plan/',
+      notes: 'V11-də parolsuz olduğu üçün seyfdən çıxarılmışdı, indi qorunma əlavə olunduğu üçün geri qaytarılır. DİQQƏT: bu layihə əvvəllər "internetsiz işləyir" xüsusiyyəti ilə satılırdı (tək HTML fayl) — indi Firebase qeydiyyatı üçün internet tələb edir. Bu, bilərəkdən qəbul edilmiş güzəşdir.'
+    },
+    {
+      id: 'plan-valideyn',
+      name: 'Valideyn Reabilitasiya Bələdçisi',
+      url: 'https://samir210-az.github.io/plan-valideyn/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'Diaqnoza görə fərqlənən, valideynin evdə uşaqla işləməsi üçün Səhər/Gündüz/Axşam gündəlik bələdçi generatoru.',
+      adminAccess: 'Başlıqdakı "AN Psixoloji Dəstək və Reabilitasiya Mərkəzi" yazısına 5 dəfə toxun → admin.html → PIN.',
+      adminPassword: 'AL2026EA',
+      registration: '"plan" reposu ilə eyni qeydiyyat/təsdiq mexanizmi.',
+      firebase: 'Layihə: an-psixoloji-33442\\nDatabase path: registrations/plan-valideyn/',
+      notes: 'V11-də seyfdən çıxarılmışdı, indi geri qaytarılır. Eyni "internetsiz işləmə itkisi" güzəşti bura da aiddir.'
+    },
+    {
+      id: 'mchatr',
+      name: 'M-CHAT-R (Autizm Skrininqi)',
+      url: 'https://samir210-az.github.io/m-chat-r/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'M-CHAT-R — Autizm üçün Dəyişdirilmiş Yoxlama Siyahısı (Yenilənmiş versiya), 3 dildə (AZ/RU/EN).',
+      adminAccess: 'Başlıqdakı (h1) mətnə 5 dəfə ardıcıl toxun → admin.html → PIN.',
+      adminPassword: 'AL2026EA',
+      registration: 'Telefon+PIN qeydiyyatı, sual cavablarına (bəli/xeyr düymələri) toxunanda qapı açılır.',
+      firebase: 'Layihə: an-psixoloji-33442\\nDatabase path: registrations/m-chat-r/',
+      notes: 'Əvvəllər heç bir qapı yox idi, sıfırdan quruldu.'
+    },
+    {
+      id: 'cbt',
+      name: 'SCARED Narahatlıq Skrininqi',
+      url: 'https://samir210-az.github.io/cbt/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'SCARED (Birmaher və b., 1999) əsaslı klinik narahatlıq skrininqi — Valideyn (SCARED-P) və Uşaq formaları, 41 bənd, 5 alt-şkala.',
+      adminAccess: 'Başlıqdakı (h2) "AN Psixoloji Dəstək Mərkəzi" yazısına 5 dəfə toxun → admin.html → PIN.',
+      adminPassword: 'AL2026EA',
+      registration: 'Telefon+PIN qeydiyyatı, sual seçimlərinə (radio) toxunanda qapı açılır.',
+      firebase: 'Layihə: an-psixoloji-33442\\nDatabase path: registrations/cbt/',
+      notes: 'Köhnə statik-açar (LICENSE_DB) sistemi əvəz olundu.'
+    },
+    {
+      id: 'ttap',
+      name: 'TTAP Professional Plus',
+      url: 'https://samir210-az.github.io/AN/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'Çoxsahəli peşə yönümlü qiymətləndirmə — iş bacarıqları, sosial, koqnitiv, gündəlik həyat, sensor-motor, loqopedik bölmələr.',
+      adminAccess: 'Başlıqdakı (h2) yazıya 5 dəfə toxun → admin.html → PIN.',
+      adminPassword: 'AL2026EA',
+      registration: 'Telefon+PIN qeydiyyatı. Suallar <select> açılan siyahı ilə cavablandırılır (klik yox, "dəyişmə" hadisəsi) — ona görə ortaq license-check.js-ə select/change dəstəyi əlavə olundu.',
+      firebase: 'Layihə: an-psixoloji-33442\\nDatabase path: registrations/ttap/',
+      notes: 'DİQQƏT — bu reponun index.html-i qeyri-adi strukturdadır: faylın əvvəlində əlavə bir XOR-şifrələnmiş <script> bloku var (əsas HTML sənədindən kənarda), ondan sonra əsl sənəd başlayır. Diqqətlə deşifrə edilib təhlil olundu, obfuscated blok toxunulmadı.'
+    },
+    {
+      id: 'erkeninkisaf',
+      name: 'Erkən İnkişaf Rotası',
+      url: 'https://samir210-az.github.io/TEST/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'İnkişaf Rotası — Peşəkar Dəyərləndirmə, sahə üzrə bacarıqları 0-4 şkalası ilə qiymətləndirir.',
+      adminAccess: 'Başlıqdakı (h1) "ERKƏN İNKİŞAF" yazısına 5 dəfə toxun → admin.html → PIN.',
+      adminPassword: 'AL2026EA',
+      registration: 'Telefon+PIN qeydiyyatı, reytinq düymələrinə (.rating-opt) toxunanda qapı açılır.',
+      firebase: 'Layihə: an-psixoloji-33442\\nDatabase path: registrations/TEST/',
+      notes: 'Repo adı "TEST" olsa da real, istifadədə olan bir alətdir (menyu-da "Erkən İnkişaf" kimi linklənib). Köhnə statik-açar sistemi əvəz olundu.'
+    },
+    {
+      id: 'anqiymetlendirme',
+      name: 'Diaqnostik Qiymətləndirmə Sistemi',
+      url: 'https://samir210-az.github.io/an-qiymetlendirme-sistemi/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'Çoxsahəli diaqnostik qiymətləndirmə sistemi, domain-əsaslı sual strukturu.',
+      adminAccess: 'Ana səhifə başlığına (h1) 5 dəfə toxun → admin.html → PIN.',
+      adminPassword: 'AL2026EA',
+      registration: 'Telefon+PIN qeydiyyatı, sual seçimlərinə (.opt düymələri) toxunanda qapı açılır.',
+      firebase: 'Layihə: an-psixoloji-33442\\nDatabase path: registrations/an-qiymetlendirme/',
+      notes: 'Əvvəllər heç bir qapı yox idi (app.js təmiz, şifrələnməmiş idi), sıfırdan quruldu.'
+    },
+    {
+      id: 'erkenmudaxile',
+      name: 'AN Erkən Müdaxilə & İnkişaf',
+      url: 'https://samir210-az.github.io/erken-mudaxile/',
+      type: 'firebase',
+      category: 'Klinika',
+      desc: 'Skrininq + inkişaf məqsədləri izləmə platforması, rol-əsaslı (admin/terapevt/valideyn).',
+      adminAccess: 'istifadeciler.html admin panelinə "admin" rolu ilə giriş (email/şifrə).',
+      adminPassword: '',
+      registration: 'Öz tam Firebase Auth sistemi var (email/şifrə və ya telefon SMS) — bu, digər alətlərdəki phone+PIN modelindən fərqlidir. Yeni istifadəçi defolt "valideyn" rolu alır. "Terapevt" statusu tələb etsə, admin panelində gözləyir; indi HƏM istifadəçiyə (qeydiyyatdan sonra), HƏM admin panelinə (gözləyən sorğunun yanında) WhatsApp aktivləşdirmə düyməsi əlavə olundu.',
+      firebase: 'Layihə: an-psixoloji-33442\\nDatabase path: users/\\nİlk admin rolu Firebase Console/Firestore-dan əl ilə təyin olunmalıdır.',
+      notes: 'AN Valideyn Akademiyası ilə eyni memarlıq fəlsəfəsi (özünü-qeydiyyat + admin-təsdiqli rol yüksəlişi) — ona görə əsas registrasiya axını dəyişdirilmədi, yalnız WhatsApp qatı əlavə olundu.'
+    }
+  ];
+}
+
+// ABA Terapiya və NeuroCBT/SaaS qeydlərini yenilə (V12: PIN AL2026EA + WhatsApp əlavələri)
+function applyV12Updates(list){
+  return list.map(p=>{
+    if(p.id === 'aba-terapiya'){
+      return Object.assign({}, p, {
+        adminAccess: 'admin.html səhifəsinə keç → PIN daxil et. Panel qeydiyyatdan keçənləri göstərir, Aktivləşdir/Deaktiv et düymələri var.',
+        adminPassword: 'AL2026EA',
+        registration: 'Repetitor CRM modelinə keçirildi: istifadəçi telefon+PIN ilə qeydiyyatdan keçir → SuperAdmin təsdiqləyənə qədər "Gözləyir" ekranında WhatsApp aktivləşdirmə düyməsi görünür (994552107111). Əvvəlki SMS OTP (Firebase Phone Auth) sistemi tamamilə əvəz olundu.',
+        notes: (p.notes || '') + ' [V12 yeniləməsi: qeydiyyat sistemi SMS OTP-dən telefon+PIN+SuperAdmin təsdiqinə keçirildi, PIN AN2026EA-dan AL2026EA-ya dəyişdirildi.]'
+      });
+    }
+    if(p.id === 'neurocbt'){
+      return Object.assign({}, p, {
+        notes: (p.notes || '') + ' [V12 yeniləməsi: "Gözləyir" ekranına WhatsApp aktivləşdirmə düyməsi əlavə olundu (994552107111), admin şifrəsi (AN2026) dəyişdirilmədi — bu, universal AL2026EA PIN sistemindən ayrı, öz istifadəçi/parol sistemidir.]'
+      });
+    }
+    return p;
+  });
+}
+
 // "plan" ve "plan-valideyn" giris qorumasi olmadigi ucun bu seyfden cixarilir.
 function applyV11Updates(list){
   return list.filter(p => p.id !== 'plan' && p.id !== 'plan-valideyn');
@@ -646,6 +803,10 @@ function loadData(){
   }
   if(currentVersion < 11){
     projects = applyV11Updates(projects);
+  }
+  if(currentVersion < 12){
+    newEntriesV12().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+    projects = applyV12Updates(projects);
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
