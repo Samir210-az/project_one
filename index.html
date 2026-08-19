@@ -370,7 +370,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 12;
+const VAULT_VERSION = 13;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -762,6 +762,25 @@ function applyV11Updates(list){
   return list.filter(p => p.id !== 'plan' && p.id !== 'plan-valideyn');
 }
 
+// ---------- Migration v13: CV Generator əlavə edildi ----------
+function newEntriesV13(){
+  return [
+    {
+      id: 'cvgenerator',
+      name: 'CV Generator',
+      url: 'https://cv-generator-nine-phi.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: '58 peşəkar şablonlu CV yaratma platforması — 3 dil (AZ/EN/RU), Word/PDF ixracı, WhatsApp abunə aktivləşdirmə sistemi.',
+      adminAccess: 'Header və ya hero loqoya 5 dəfə ardıcıl toxun → admin.html açılır → PIN daxil et.',
+      adminPassword: 'AL2026EA',
+      registration: 'İctimai qeydiyyat yoxdur — istifadəçi CV-ni sərbəst doldurur, Word/PDF yükləmək üçün abunə planı seçib WhatsApp ilə ödəniş edir. Admin panel telefon nömrəsinə görə əl ilə aktivləşdirir.',
+      firebase: 'Layihə: cv-generator-sub\nDatabase path: subscriptions/{telefon}\nSahələr: plan, planName, price, activatedAt, expiresAt',
+      notes: 'GitHub: github.com/Samir210-az/cv-generator. Admin paneldə "Bu cihazı limitsiz aktivləşdir" düyməsi var — yalnız həmin brauzeri (localStorage) 10 illik limitsiz edir, başqa istifadəçilərə təsir etmir. 19.08.2026: PDF ixracında sağ tərəf kəsilmə problemi düzəldildi (A4 çap sahəsinə uyğun zoom hesablanması).'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -807,6 +826,9 @@ function loadData(){
   if(currentVersion < 12){
     newEntriesV12().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
     projects = applyV12Updates(projects);
+  }
+  if(currentVersion < 13){
+    newEntriesV13().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
