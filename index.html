@@ -112,6 +112,7 @@
     letter-spacing:.03em;text-transform:uppercase;}
   .badge.firebase{background:rgba(210,165,93,.15);color:var(--gold-light);border:1px solid rgba(210,165,93,.3);}
   .badge.local{background:rgba(42,157,143,.15);color:var(--teal);border:1px solid rgba(42,157,143,.3);}
+  .badge.supabase{background:rgba(62,159,142,.15);color:#3ecf8e;border:1px solid rgba(62,159,142,.35);}
   .card-desc{font-size:12.5px;color:var(--ink-dim);margin-top:8px;line-height:1.5;}
   .chev{transition:transform .3s;color:var(--gold);opacity:.7;}
   .card.open .chev{transform:rotate(180deg);}
@@ -370,7 +371,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 13;
+const VAULT_VERSION = 14;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -781,6 +782,117 @@ function newEntriesV13(){
   ];
 }
 
+// ---------- Migration v14: Toy, Hollywood və əvvəllər seyfə düşməmiş biznes CRM-ləri ----------
+// Bütün adminPassword/PIN dəyərləri hər layihənin öz GitHub kodunu oxuyaraq TƏSDİQLƏNİB (uydurulmayıb).
+function newEntriesV14(){
+  return [
+    {
+      id: 'toy',
+      name: 'Toy Sistemi',
+      url: 'https://toy-baki.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Restoranlar üçün toy/məclis zalı rezervasiya SaaS-ı — çoxzallı kalendar, eyni zal+tarix konfliktinin bloklanması, xərc kalkulyatoru.',
+      adminAccess: 'Login (Daxil olun) səhifəsində "Daxil olun" başlığına 5 dəfə ardıcıl toxun (1.5 saniyə ərzində) → platform admin PIN pəncərəsi açılır. Görünən düymə/link yoxdur, bilərəkdən gizlədilib.',
+      adminPassword: 'AL2026EA',
+      registration: 'Toyxana sahibi telefon+PIN ilə qeydiyyatdan keçir, qeydiyyatda zallarının sayını və hər zalın adını özü daxil edir. 7 gün pulsuz sınaq, sonra sən (platform admin) əl ilə 1/6/12 aylıq planı aktivləşdirirsən (ödəniş nağd, gateway yoxdur). Toyxana özü yeni zal əlavə edə bilmir — yalnız sən admin paneldən əlavə edə bilərsən.',
+      firebase: 'Layihə: toy-sistemi (paylaşılan an-psixoloji-33442 DEYİL, ayrıca Firebase layihəsi)\nDatabase: https://toy-sistemi-default-rtdb.europe-west1.firebasedatabase.app\nPath: customers/{telefon}/zallar, customers/{telefon}/meclisler\nQEYD: RTDB Security Rules hələ "test mode"da (30 gün açıq giriş) — kilidlənməsi planlaşdırılıb, hələ edilməyib.',
+      notes: 'GitHub: github.com/Samir210-az/toy. Vercel-də "toy-baki" adı ilə deploy edilib (Samir tərəfindən dashboard-dan əl ilə). Hər zal ayrı rəng+watermark şəkli ilə fərqləndirilir.'
+    },
+    {
+      id: 'hollywood',
+      name: 'Hollywood Restaurant',
+      url: 'https://hollywood-baki.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Hollywood restoranı üçün masa/otaq rezervasiya idarəetmə paneli.',
+      adminAccess: 'Sayt giriş səhifəsində telefon+PIN daxil et. Sabit universal PIN YOXDUR — hər işçinin öz PIN-i "İşçilər" bölməsində ayrıca təyin olunur (employees/{id}: name, phone, pin, role).',
+      adminPassword: 'Təsdiqlənmiş nümunə qeyd: Vüsal (admin rolu) → telefon 0508260093, PIN 2026. Digər işçilərin PIN-lərini görmək/dəyişmək üçün "İşçilər" bölməsinə admin hesabı ilə daxil ol.',
+      registration: 'İctimai qeydiyyat yoxdur — işçilər admin tərəfindən "İşçilər" bölməsindən əlavə olunur (ad+telefon+PIN+rol).',
+      firebase: 'Layihə: hollywood-restaurant (ayrıca Firebase layihəsi, paylaşılan an-psixoloji-33442 DEYİL)\nRealtime Database, region: europe-west1\nPIN-əsaslı giriş Firebase Auth-dan asılı deyil — RTDB Rules ayrıca qorunur (database.rules.json).',
+      notes: 'GitHub: github.com/Samir210-az/hollywood. Loqo: dairəvi, qara fon üzərində qızılı "Hollywood Restaurant" mətni.'
+    },
+    {
+      id: 'emlak-crm',
+      name: 'Əmlak CRM',
+      url: 'https://emlak-az.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Çoxagentlikli (multi-tenant) əmlak agentliyi idarəetmə sistemi.',
+      adminAccess: '/master marşrutuna keç → PIN daxil et (SuperAdmin.jsx, sabit kodda).',
+      adminPassword: 'AL2026EA',
+      registration: 'Agentlik sahibi ad+agentlik adı+telefon+PIN ilə qeydiyyatdan keçir (Auth.jsx) → 7 gün pulsuz sınaq (plan: "sınaq") → sən /master-dən planı uzadırsan (aylıq/illik).',
+      firebase: 'Realtime Database path: emlak_crm/tenants/{tenantId}, emlak_crm/phone_index/{telefon}, emlak_crm/analytics',
+      notes: 'GitHub: github.com/Samir210-az/emlak-crm. Firebase Storage-da böyük şəkil yükləmələri 0%-də ilişmə problemi var idi (kök səbəb tam həll olunmayıb).'
+    },
+    {
+      id: 'repetitor-crm',
+      name: 'Repetitor CRM',
+      url: 'https://repetitor-k.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Repetitorlar üçün şagird/dərs idarəetmə platforması, Groq AI inteqrasiyası ilə.',
+      adminAccess: '/master marşrutuna keç → PIN daxil et (Əmlak CRM ilə eyni SuperAdmin.jsx strukturu).',
+      adminPassword: 'AL2026EA',
+      registration: 'Repetitor ad+fənn+telefon+PIN ilə qeydiyyatdan keçir → 7 gün pulsuz sınaq → sən /master-dən planı uzadırsan.',
+      firebase: 'Realtime Database path: repetitor/tenants/{tenantId}, repetitor/phone_index/{telefon}',
+      notes: 'GitHub: github.com/Samir210-az/repetitor. Əmlak CRM-lə demək olar eyni bazada (Auth/SuperAdmin) qurulub, fərq yalnız domenlərdədir.'
+    },
+    {
+      id: 'sirniyyat',
+      name: 'Ev Ləzzəti Şirniyyat POS',
+      url: 'https://sirniyyat.vercel.app',
+      type: 'local',
+      category: 'Biznes',
+      desc: 'Şirniyyat mağazası üçün POS/sifariş idarəetmə sistemi — Firebase YOXDUR, tam localStorage (tək cihaz) əsaslıdır.',
+      adminAccess: 'Loqoya 5 dəfə ardıcıl toxun (2 saniyə ərzində) → gizli admin PIN pəncərəsi açılır.',
+      adminPassword: 'AL2026EA',
+      registration: 'Müştəri qeydiyyatı yoxdur — bu, restoranın öz daxili POS-udur. Cihaz lisenziya kodu ilə aktivləşdirilir (license_code, localStorage-də saxlanılır).',
+      firebase: 'Firebase istifadə olunmur. Bütün data (məhsul/sifariş/müştəri) browser localStorage-də saxlanılır — çoxcihazlı sinxronizasiya YOXDUR, cihaz dəyişəndə data itir.',
+      notes: 'GitHub: github.com/Samir210-az/sirniyyat. Gələcəkdə Supabase-ə keçirilib çoxcihazlı admin paneli planlaşdırılır (hələ edilməyib).'
+    },
+    {
+      id: 'tender-ai',
+      name: 'Tender AI',
+      url: 'https://tender-az.vercel.app',
+      type: 'local',
+      category: 'Biznes',
+      desc: 'Tender sənədlərinin AI (Groq/Gemini) ilə analizi və uyğunluq yoxlanışı SaaS-ı.',
+      adminAccess: '/admin marşrutuna keç → PIN daxil et. Server-side API route (service_role açarı ilə), PIN-header autentifikasiyası.',
+      adminPassword: 'AL2026EA (kodda comment ilə açıq təsdiqlənib: "Universal SuperAdmin PIN: AL2026EA" — adminPinHash.js-də hash saxlanılır, açıq mətn deyil, amma dəyər budur).',
+      registration: 'Telefon+PIN qeydiyyatı (Supabase Postgres, RLS ilə qorunur). WhatsApp üzərindən manual ödəniş aktivasiyası (aylıq/illik).',
+      firebase: 'Firebase YOXDUR — Supabase Postgres istifadə olunur. Sənədlər Supabase Storage-da (private bucket) saxlanılır.',
+      notes: 'GitHub: github.com/Samir210-az/tender. DİQQƏT: menyu.html-də link "tender-az.vercel.app" kimi göstərilir, əvvəlki qeydlərdə isə "tender-ai-alpha.vercel.app" yazılmışdı — hansının aktual canlı domen olduğunu bir də özün yoxla, uyğunsuzluq var.'
+    },
+    {
+      id: 'klinika-crm',
+      name: 'Klinika CRM',
+      url: 'https://klinika-az.vercel.app',
+      type: 'supabase',
+      category: 'Biznes',
+      desc: 'Tam klinika idarəetmə sistemi (React+Vite+Supabase) — Klinika Sistemi (Firebase, AN Mərkəzi üçün) ilə QARIŞDIRMA, bu AYRI, satıla bilən CRM məhsuludur.',
+      adminAccess: 'Telefon+PIN ilə giriş (auth-login.js). Sabit universal PIN YOXDUR — hər işçinin PIN-i Supabase "employees" cədvəlində bcrypt ilə hashlənib saxlanılır, kodda görünmür.',
+      adminPassword: 'BURADA GÖSTƏRİLƏ BİLMƏZ: PIN-lər bcrypt hash formatındadır (pin_hash sahəsi), geri əldə edilə bilməz. İlk admin/işçi hesabını Supabase Dashboard-dan (Table Editor → employees) əl ilə yaratmaq və ya mövcud PIN-i sıfırlamaq lazımdır.',
+      registration: 'İctimai qeydiyyat yoxdur — işçilər (admin daxil) Supabase "employees" cədvəlinə əl ilə əlavə olunur, PIN bcrypt ilə hashlənir.',
+      firebase: 'Firebase YOXDUR — Supabase Postgres. Cədvəllər: employees (pin_hash, role, is_active), patients və s. attendance-kiosk.js adlı ayrıca davamiyyət girişi də var (eyni telefon+PIN məntiqi).',
+      notes: 'GitHub: github.com/Samir210-az/klinika-crm. Klinika Sistemi (bu seyfdə "klinika" id-li, Firebase-əsaslı, yalnız AN Mərkəzi üçün) ilə QARIŞDIRMA — bu, xarici müştərilərə satıla bilən ayrıca məhsuldur.'
+    },
+    {
+      id: 'restoran-saas',
+      name: 'Restoran SaaS',
+      url: 'https://restoran-admin-panel.vercel.app',
+      type: 'supabase',
+      category: 'Biznes',
+      desc: 'Çoxrestoranlı (multi-tenant) sifariş/masa/mətbəx idarəetmə platforması (Next.js+Supabase).',
+      adminAccess: '/platform marşrutu — platform-level admin, restoran-scoped stafftən TAMAM ayrı roldur (requirePlatformAdmin). Adi işçi girişi isə PIN-pad ekranı (RoleLoginGate) ilə: restoran seç → kartından adını tap → qısa PIN yaz.',
+      adminPassword: 'BURADA GÖSTƏRİLƏ BİLMƏZ: sabit universal PIN yoxdur, hər işçinin/platform admin-in PIN-i Supabase-də ayrıca saxlanılır və "PIN sıfırla" funksiyası ilə idarə olunur (/platform/{restaurantId} altında).',
+      registration: 'İctimai qeydiyyat yoxdur — restoranlar və işçiləri platform admin tərəfindən sistemə əlavə olunur.',
+      firebase: 'Firebase YOXDUR — Supabase Postgres. Monorepo strukturu: apps/admin-panel (Next.js). "staff_members" cədvəli aktiv işçiləri saxlayır.',
+      notes: 'GitHub: github.com/Samir210-az/restoran. Platform admin PIN-i sıfırlamaq üçün öz restoran hesabından deyil, /platform bölməsindən (ayrı rol) daxil olmaq lazımdır.'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -829,6 +941,9 @@ function loadData(){
   }
   if(currentVersion < 13){
     newEntriesV13().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 14){
+    newEntriesV14().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
@@ -882,7 +997,7 @@ function cardHTML(p){
         ${p.url ? `<div class="card-url">${esc(p.url)}</div>` : ''}
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <span class="badge ${p.type==='firebase'?'firebase':'local'}">${p.type==='firebase'?'Firebase':'Local'}</span>
+        <span class="badge ${p.type==='firebase'?'firebase':p.type==='supabase'?'supabase':'local'}">${p.type==='firebase'?'Firebase':p.type==='supabase'?'Supabase':'Local'}</span>
         <span class="chev">▾</span>
       </div>
     </div>
