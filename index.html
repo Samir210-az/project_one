@@ -371,7 +371,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 15;
+const VAULT_VERSION = 16;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -926,6 +926,24 @@ function newEntriesV15(){
   ];
 }
 
+function newEntriesV16(){
+  return [
+    {
+      id: 'cayxana',
+      name: 'Çayxana',
+      url: 'https://cayxana-az.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Çayxana/kafe idarəetmə paneli — stollar, sifariş qəbulu, ödəniş izlənməsi, xərclər və gün/həftə/ay/ümumi hesabatlar.',
+      adminAccess: 'Sayt açılan kimi PIN ekranı görünür. Gizli test-data sıfırlama: footer-dəki "Çayxana idarəetmə paneli" mətninə 2 saniyə ərzində 6 dəfə ardıcıl toxun → təsdiqdən sonra satış/açıq sifariş/xərc tarixçəsi silinir (stollar, məhsullar və sürətli-seçimlərə toxunmur, geri qaytarılmır).',
+      adminPassword: 'PIN: 2026 — kodda (index.html, PIN_HASH sabiti) SHA-256 hash şəklində saxlanılır, plaintext deyil. Tək ortaq PIN-dir — sahib və administrator eyni kodu bilir, ayrıca hesab yoxdur. Dəyişmək üçün yeni PIN-in SHA-256 hash-i hesablanıb PIN_HASH sabitinə yazılmalıdır.',
+      registration: 'Qeydiyyat yoxdur — tək-tenant tətbiqdir, birbaşa PIN ilə giriş edilir. Sahib və administrator fərqli cihazlardan (2 cihaz) eyni tətbiqi paralel istifadə edir, data Firebase Realtime Database vasitəsilə real-vaxtda sinxronlaşır (bir cihazda edilən dəyişiklik digərində dərhal görünür).',
+      firebase: 'Layihə: cayxana (Realtime Database, region: europe-west1), an-psixoloji-33442-dən müstəqil ayrıca Firebase layihəsi. Rules bilərəkdən açıq buraxılıb ({".read":true,".write":true}) — giriş Firebase Authentication istifadə etmədiyi üçün auth-əsaslı qayda mümkün deyil, qorunma tam olaraq client-side PIN ekranına əsaslanır.',
+      notes: 'GitHub: github.com/Samir210-az/cayxana. Saf HTML/CSS/JS (framework/build addımı yoxdur), Vercel-də statik sayt kimi deploy edilir. PWA quraşdırılıb: manifest, göndərilən samovar şəklindən hazırlanan ikonlar (192/512/maskable), service worker (real-vaxt data köhnəlməsin deyə bilərəkdən heç nə keşləmir). Giriş ekranı samovar şəklini tam-ekran fon olaraq istifadə edir. İlkin data: 10 stol, 1 məhsul (Çay — 4 ₼); admin Məhsullar səhifəsindən və ya masa daxilindəki "+ Yeni"dən yeni məhsul əlavə edə bilər, özünün idarə etdiyi "sürətli-seçim" ad qısayolları da qura bilər (qiymət hər dəfə əl ilə yazılır).'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -980,6 +998,9 @@ function loadData(){
   }
   if(currentVersion < 15){
     newEntriesV15().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 16){
+    newEntriesV16().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
