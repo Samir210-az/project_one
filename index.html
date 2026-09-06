@@ -371,7 +371,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 14;
+const VAULT_VERSION = 15;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -893,6 +893,39 @@ function newEntriesV14(){
   ];
 }
 
+// ---------- Migration v15: PET CRM və Renta-Car (AutoCar) ----------
+// adminPassword/PIN dəyərləri hər iki layihənin öz GitHub kodu oxunaraq TƏSDİQLƏNİB (uydurulmayıb).
+function newEntriesV15(){
+  return [
+    {
+      id: 'petcrm',
+      name: 'PET CRM',
+      url: 'https://pet-crm-az.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Heyvan biznesləri (baytar klinikası / zoomağaza-grooming) üçün CRM — giriş/abunə/komanda infrastrukturu hazırdır, əsas idarəetmə funksionallığı hələ qurulmayıb.',
+      adminAccess: 'index.html-dəki "PETCRM" loqosuna 2 saniyə ərzində 5 dəfə ardıcıl toxun → admin.html açılır. PIN YOXDUR — giriş birbaşa Google hesabına bağlıdır (admin.html kodunda ADMIN_EMAIL sabiti açıq göstərilib).',
+      adminPassword: 'PIN yoxdur. Yalnız samir.akhundoff@gmail.com Google hesabı ilə Google Sign-In qəbul olunur (kodda ADMIN_EMAIL = "samir.akhundoff@gmail.com").',
+      registration: 'Biznes sahibi Google Sign-In ilə qeydiyyatdan keçir, "Baytar Klinikası" və ya "Zoomağaza / Grooming" rolunu seçir → 3 günlük pulsuz sınaq avtomatik açılır (kodda TRIAL_DAYS=3 təsdiqlənib). Sonrakı 6 ay/1 il aktivasiyanı sən admin.html-dən əl ilə edirsən. Çoxişçili dəstək: müdir team.html-dən email ilə dəvət göndərir, işçi Google ilə ilk girişdə avtomatik bağlanır (rollar: baytar, resepşn, laborant, digər).',
+      firebase: 'Layihə: petcrm-c0cfe (Realtime Database, region: europe-west1). Auth: Firebase Authentication + Google provider — PIN sistemi deyil, klassik email auth.',
+      notes: 'GitHub: github.com/Samir210-az/petcrm. Paralel olaraq GitHub Pages-də də canlıdır: samir210-az.github.io/petcrm/. DİQQƏT: hazırda əsl CRM funksionallığı çatışmır — heyvanların siyahısı/axtarışı yoxdur, POS ekranı saxta/statik data ilə işləyir, xəbərdarlıq (alerts) yaratma məntiqi heç yoxdur; dashboard bunları göstərir amma arxada mənbə yoxdur.'
+    },
+    {
+      id: 'renta-car',
+      name: 'AutoCar (Renta-Car)',
+      url: 'https://rentacar-az.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Çoxşirkətli (multi-tenant) rent-a-car idarəetmə SaaS-ı — flot, icarə, təqvim, ictimai kataloq, təhvil-təslim aktı.',
+      adminAccess: '/platform-login marşrutuna keç → 4 rəqəmli PIN pad-dan kod daxil et (PlatformLogin.jsx → checkPlatformPin, Firebase-dəki platform/adminPinHash ilə müqayisə olunur).',
+      adminPassword: 'Default PIN: 2026 — kodda (src/lib/data.js, ensureDefaultPlatform funksiyası) Firebase-ə ilk dəfə yazılanda bu dəyər təyin olunur. QEYD: platform admin paneldən sonradan dəyişdirilibsə faktiki dəyər fərqli ola bilər — hash Firebase-də saxlanılır, geri oxuna bilməz.',
+      registration: 'Şirkət sahibi ad+telefon+4 rəqəmli PIN ilə qeydiyyatdan keçir, istəyə görə loqo yükləyir (Register.jsx) → 3 günlük pulsuz sınaq avtomatik aktivləşir, Telegram bildirişi göndərilir. Sən (platform admin) /platform-admin-dən planı (1 Ay/6 Ay/1 İl) əl ilə uzadırsan.',
+      firebase: 'Layihə: renta-car-f00ad (Realtime Database, region: europe-west1) — an-psixoloji-33442-dən müstəqil ayrıca Firebase layihəsi.',
+      notes: 'GitHub: github.com/Samir210-az/renta-car. Vercel-də "rentacar-az" adı ilə deploy edilib (team samir223). Tətbiq "AutoCar" adı və loqosu ilə brendləşdirilib, hər şirkət qeydiyyat/tənzimləmələrdən öz loqosunu yükləyə bilir. Maşın idarəetməsinə əlavə olunub: istehsal ili, çoxlu şəkil qalereyası, təhvil-təslim aktında xarici (zədə sxemi) və daxili vəziyyət ayrıca qeydlər, nömrə şəkli, müştərinin sürücülük vəsiqəsi nömrəsi və bitmə tarixi.'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -944,6 +977,9 @@ function loadData(){
   }
   if(currentVersion < 14){
     newEntriesV14().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 15){
+    newEntriesV15().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
