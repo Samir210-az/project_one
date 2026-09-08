@@ -371,7 +371,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 16;
+const VAULT_VERSION = 17;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -944,6 +944,48 @@ function newEntriesV16(){
   ];
 }
 
+function newEntriesV17(){
+  return [
+    {
+      id: 'lisenziya-generator',
+      name: 'Lisenziya Generatoru',
+      url: 'https://samir210-az.github.io/lisenziya/',
+      type: 'local',
+      category: 'Sistem',
+      desc: 'Daxili admin aləti — Cbt1 və ai-test üçün müştəri lisenziya kodları yaradır (1 aylıq/6 aylıq/1 illik). Yalnız sən istifadə edirsən, müştəri heç görmür.',
+      adminAccess: 'Sayt açılan kimi PIN ekranı görünür (sessionStorage-da saxlanılır, brauzer bağlanana qədər yenidən soruşulmur). Giriş edəndən sonra "Məhsul" seç (Cbt1 / ai-test), "Lisenziya növü" seç (1 aylıq/6 aylıq/1 illik), "Lisenziya yarat" bas — kod və bitmə tarixi çıxır, "Kopyala" ilə müştəriyə göndər.',
+      adminPassword: 'PIN: AL2026EA (kodda ADMIN_PIN sabiti, plaintext — bu, klinika-sistemi/an-kurs-portali admin panellərində istifadə olunan EYNİ PIN-dir, birini bilən digərinə də girə bilər).',
+      registration: 'Qeydiyyat yoxdur — tək istifadəçi (sən) üçün nəzərdə tutulub.',
+      firebase: 'Backend yoxdur — kod generasiyası tamamilə client-side JS-də (checksum + tarix əsaslı), heç bir server/verilənlər bazasına yazmır.',
+      notes: 'GitHub: github.com/Samir210-az/lisenziya. Hər məhsulun öz SALT sabiti var (Cbt1: AN-CBT1-2026, ai-test: AN-AITEST-2026) — bir məhsulun kodu digərində işləməz. Kod formatı: LIC-{1M|6M|1Y}-{bitmə-tarixi-base36}-{checksum}. Bu, real təhlükəsizlik deyil (backend yoxdur) — sadəcə təsadüfi uydurmanı/paylaşmanı çətinləşdirir, Cbt1-də qərarlaşdırılan tradeoff.'
+    },
+    {
+      id: 'cbt1',
+      name: 'Cbt1 (CBT Klinik Qiymətləndirmə)',
+      url: 'https://samir210-az.github.io/Cbt1/',
+      type: 'local',
+      category: 'Klinika',
+      desc: 'AN Psixoloji Dəstək Mərkəzi üçün CBT (Koqnitiv-Davranış Terapiyası) klinik qiymətləndirmə aləti.',
+      adminAccess: 'Ayrıca admin PIN-i yoxdur — sayt tam açıqdır, yalnız "Hesabla" düyməsi lisenziya kodu tələb edir. Kodu "Lisenziya Generatoru"ndan (yuxarıda) yaradıb müştəriyə göndərirsən.',
+      registration: 'Qeydiyyat yoxdur. Müştəri lisenziya kodunu daxil edib aktivləşdirir, kod cihazda (localStorage) saxlanılır, bitənə qədər aktivdir.',
+      firebase: 'Əsas tətbiqin öz backend-i yoxdur (localStorage-only). Əvvəllər statik XOR-obfuscated kod istifadə olunurdu (təhlükəsiz deyildi) — indi yuxarıdakı checksum-əsaslı lisenziya sisteminə keçirilib.',
+      notes: 'GitHub: github.com/Samir210-az/Cbt1. Vizual dizaynı "SECURITY GROUP" brendli tünd-göy/mavi holoqram temasına uyğunlaşdırılıb (AN-ın isti bordo/qızılı temasından fərqli, ayrıca qərar).'
+    },
+    {
+      id: 'ai-test',
+      name: 'ai-test (AN Psixoloji Qiymətləndirmə)',
+      url: 'https://ai-test-az.vercel.app',
+      type: 'local',
+      category: 'Klinika',
+      desc: '12 beynəlxalq standart psixoloji test (PHQ-9, GAD-7, BDI-II, DASS-21, Y-BOCS, SCL-90 və s.) + AI ilə klinik təhlil və mütəxəssis üçün iş planı. AZ/RU dillərində.',
+      adminAccess: 'Ayrıca admin PIN-i yoxdur — sayt/testlərin siyahısı tam açıqdır, yalnız bir testi başlatmaq (/questionnaire/{id}) lisenziya kodu tələb edir. Kodu "Lisenziya Generatoru"ndan (yuxarıda, "ai-test" seçərək) yaradıb müştəriyə göndərirsən.',
+      registration: 'Qeydiyyat yoxdur. Lisenziya aktivləşdirmə zamanı müştəridən telefon nömrəsi də tələb olunur (kimin aldığını izləmək üçün). 1 lisenziya kodu bütün 12 testə giriş açır, cihazda (localStorage) saxlanılır.',
+      firebase: 'Əsas tətbiqin öz backend-i yoxdur (localStorage-only). Lisenziya aktivləşdiriləndə iki yerə bildiriş gedir: (1) Telegram bota (@samir_bildiris_bot, chat 1315001188) — kod/müddət/bitmə tarixi/telefon; (2) SG Insight analitikasına (an-psixoloji-33442 layihəsi, menyu_analytics/events yolu) — license_activated hadisəsi kimi, digər 37 layihənin yanında görünür. Səhifə baxışları və test nəticələri də eyni SG Insight yoluna yazılır.',
+      notes: 'GitHub: github.com/Samir210-az/ai-test. Next.js (App Router) + Tailwind, Vercel-də deploy. DeepSeek API ilə AI təhlil/tövsiyə yaradır. Vizual dizaynı "SECURITY GROUP" reklam görselinə uyğun tünd-göy/holoqram temasına köçürülüb. SG Insight panelində (sg-insight-x92q.html) license_activated hadisəsi üçün ayrıca KPI kartı, filtr və detal görünüşü var (menyu repo, V-də əlavə olunub).'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -1001,6 +1043,9 @@ function loadData(){
   }
   if(currentVersion < 16){
     newEntriesV16().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 17){
+    newEntriesV17().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
