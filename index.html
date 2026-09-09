@@ -813,6 +813,19 @@ function newEntriesV14(){
       notes: 'GitHub: github.com/Samir210-az/hollywood. Loqo: dairəvi, qara fon üzərində qızılı "Hollywood Restaurant" mətni.'
     },
     {
+      id: 'sened',
+      name: 'Sənəd Asistanı',
+      url: 'https://sened-az.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'AI dəstəkli məhkəmə sənəd generasiya platforması - 48 real sənəd şablonu (courts.gov.az və digər rəsmi mənbələrdən), kateqoriya→sənəd axını və DeepSeek AI ilə sərbəst mətndən layihə generasiyası.',
+      adminAccess: '/admin marşrutuna keç → Google hesabı ilə daxil ol. Sabit PIN/parol YOXDUR - admin girişi kodda sabit email siyahısı ilə (src/lib/adminConfig.js) məhdudlaşdırılıb, hazırda yalnız samir.akhundoff@gmail.com.',
+      adminPassword: 'Yoxdur (Google OAuth). Admin email: samir.akhundoff@gmail.com',
+      registration: 'Vəkillər Google hesabı ilə /vekil/giris-dən daxil olur → ad/soyad/telefon/müddət (1ay/6ay/1il) ilə müraciət göndərir (/vekil/basvuru) → admin (/admin) "Təsdiqlə" ilə aktivləşdirir, seçilmiş müddətə uyğun bitmə tarixi hesablanır. Təsdiqdən əvvəl Vəkil Panelinə (müştəri/sənəd idarəetməsi) çatış yoxdur.',
+      firebase: 'Layihə: sened-9e247, Realtime Database (region: europe-west1).\nPath: vekiller/{uid}/profil, vekiller/{uid}/basvuru (status: gozlemede/aktiv/redd, bitmeTarixi), vekiller/{uid}/musteriler/{musteriId}/senedler/{senedId}.\nRules: musteriler node-una yazma/oxuma yalnız auth.uid===$vekilId VƏ basvuru/status==="aktiv" VƏ bitmeTarixi>now olduqda.',
+      notes: 'GitHub: github.com/Samir210-az/sened. Vercel env: DEEPSEEK_API_KEY (AI generasiya), RESEND_API_KEY (vəkil müraciəti email bildirişi, admin-ə). WhatsApp bildirişi wa.me linki ilə (əl ilə göndərilir, avtomatik API deyil). PWA dəstəyi var (vite-plugin-pwa).'
+    },
+    {
       id: 'emlak-crm',
       name: 'Əmlak CRM',
       url: 'https://emlak-az.vercel.app',
