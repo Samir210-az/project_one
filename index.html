@@ -371,7 +371,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 17;
+const VAULT_VERSION = 18;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -738,6 +738,24 @@ function newEntriesV12(){
   ];
 }
 
+// ---------- Migration v18: Sənəd Asistanı -> Sənəd Köməkçisi, tam məlumat yeniləməsi ----------
+function applyV18Updates(list){
+  return list.map(p=>{
+    if(p.id === 'sened'){
+      return Object.assign({}, p, {
+        name: 'Sənəd Köməkçisi',
+        desc: 'AI dəstəkli hüquqi sənəd generasiya platforması - 294+ real sənəd şablonu (9 kateqoriya: Ailə, Mülki, Əmlak, Əmək, İnzibati, Cinayət-prosessual, Prosessual, Apellyasiya, Kassasiya + Biznes sənədləri), kateqoriya→sənəd axını, inline-doldurma (boşluqları toxunub doldurma) və vəkil panelində DeepSeek AI ilə sərbəst mətndən layihə generasiyası.',
+        adminAccess: 'Header-dəki loqoya 5 dəfə ardıcıl klik (1.2 saniyə pəncərəsində) → /admin-ə keçid, YALNIZ samir.akhundoff@gmail.com ilə giriş edilmişdirsə aktivdir (başqa hesabla 5 klik heç nə etmir). Sonra Google hesabı ilə daxil ol (admin email siyahısı src/lib/adminConfig.js-də).',
+        adminPassword: 'Yoxdur (Google OAuth + gizli 5-klik loqo mexanizmi). Admin email: samir.akhundoff@gmail.com',
+        registration: 'Vəkillər Google hesabı ilə /vekil/giris-dən daxil olur → ad/soyad/telefon/müddət (1ay/6ay/1il) ilə müraciət göndərir (/vekil/basvuru) → admin (/admin) "Təsdiqlə" ilə aktivləşdirir, seçilmiş müddətə uyğun bitmə tarixi hesablanır. Təsdiqdən əvvəl: Vəkil Panelinə çıxış yoxdur, HƏMÇİNİN adi sənəd səhifələrində mətn kopyalama/DOCX-PDF endirmə bloklanıb (yalnız aktiv-təsdiqli vəkil üçün açıqdır — sadəcə Google girişi kifayət etmir).',
+        firebase: 'Layihə: sened-9e247, Realtime Database (region: europe-west1).\nPath: vekiller/{uid}/profil, vekiller/{uid}/basvuru (status: gozlemede/aktiv/redd, bitmeTarixi), vekiller/{uid}/musteriler/{musteriId}/senedler/{senedId} (müştəriyə bağlı sənədlər), vekiller/{uid}/senedler/{senedId} (müştərisiz, vəkilin ümumi sənədləri).\nRules: hər iki senedler node-una yazma/oxuma yalnız auth.uid===$vekilId VƏ basvuru/status==="aktiv" VƏ bitmeTarixi>now olduqda.',
+        notes: 'GitHub: github.com/Samir210-az/sened. Vercel env: DEEPSEEK_API_KEY (AI generasiya), RESEND_API_KEY (vəkil müraciəti email bildirişi, admin-ə). WhatsApp bildirişi wa.me linki ilə (əl ilə göndərilir). PWA dəstəyi var. Vəkil Dashboard-da 2 tab: "Sənədlərim" (ümumi) və "Müştərilərim"; hər saxlanmış sənəd sonradan "Redaktə et" ilə yenidən açılıb dəyişdirilə bilər. Sayt üzrə axtarış (/axtar) yazı-səhvinə dözümlü (fuzzy) işləyir. [V18 yeniləməsi: 48-dən 294 sənədə böyüdü, ad dəyişdi, admin girişi gizli 5-klik+email-məhdud oldu, kopyalama/endirmə admin-təsdiqli vəkillə məhdudlaşdırıldı.]'
+      });
+    }
+    return p;
+  });
+}
+
 // ABA Terapiya və NeuroCBT/SaaS qeydlərini yenilə (V12: PIN AL2026EA + WhatsApp əlavələri)
 function applyV12Updates(list){
   return list.map(p=>{
@@ -814,16 +832,16 @@ function newEntriesV14(){
     },
     {
       id: 'sened',
-      name: 'Sənəd Asistanı',
+      name: 'Sənəd Köməkçisi',
       url: 'https://sened-az.vercel.app',
       type: 'firebase',
       category: 'Biznes',
-      desc: 'AI dəstəkli məhkəmə sənəd generasiya platforması - 48 real sənəd şablonu (courts.gov.az və digər rəsmi mənbələrdən), kateqoriya→sənəd axını və DeepSeek AI ilə sərbəst mətndən layihə generasiyası.',
-      adminAccess: '/admin marşrutuna keç → Google hesabı ilə daxil ol. Sabit PIN/parol YOXDUR - admin girişi kodda sabit email siyahısı ilə (src/lib/adminConfig.js) məhdudlaşdırılıb, hazırda yalnız samir.akhundoff@gmail.com.',
-      adminPassword: 'Yoxdur (Google OAuth). Admin email: samir.akhundoff@gmail.com',
-      registration: 'Vəkillər Google hesabı ilə /vekil/giris-dən daxil olur → ad/soyad/telefon/müddət (1ay/6ay/1il) ilə müraciət göndərir (/vekil/basvuru) → admin (/admin) "Təsdiqlə" ilə aktivləşdirir, seçilmiş müddətə uyğun bitmə tarixi hesablanır. Təsdiqdən əvvəl Vəkil Panelinə (müştəri/sənəd idarəetməsi) çatış yoxdur.',
-      firebase: 'Layihə: sened-9e247, Realtime Database (region: europe-west1).\nPath: vekiller/{uid}/profil, vekiller/{uid}/basvuru (status: gozlemede/aktiv/redd, bitmeTarixi), vekiller/{uid}/musteriler/{musteriId}/senedler/{senedId}.\nRules: musteriler node-una yazma/oxuma yalnız auth.uid===$vekilId VƏ basvuru/status==="aktiv" VƏ bitmeTarixi>now olduqda.',
-      notes: 'GitHub: github.com/Samir210-az/sened. Vercel env: DEEPSEEK_API_KEY (AI generasiya), RESEND_API_KEY (vəkil müraciəti email bildirişi, admin-ə). WhatsApp bildirişi wa.me linki ilə (əl ilə göndərilir, avtomatik API deyil). PWA dəstəyi var (vite-plugin-pwa).'
+      desc: 'AI dəstəkli hüquqi sənəd generasiya platforması - 294+ real sənəd şablonu (9 kateqoriya: Ailə, Mülki, Əmlak, Əmək, İnzibati, Cinayət-prosessual, Prosessual, Apellyasiya, Kassasiya + Biznes sənədləri), kateqoriya→sənəd axını, inline-doldurma (boşluqları toxunub doldurma) və vəkil panelində DeepSeek AI ilə sərbəst mətndən layihə generasiyası.',
+      adminAccess: 'Header-dəki loqoya 5 dəfə ardıcıl klik (1.2 saniyə pəncərəsində) → /admin-ə keçid, YALNIZ samir.akhundoff@gmail.com ilə giriş edilmişdirsə aktivdir (başqa hesabla 5 klik heç nə etmir). Sonra Google hesabı ilə daxil ol (admin email siyahısı src/lib/adminConfig.js-də).',
+      adminPassword: 'Yoxdur (Google OAuth + gizli 5-klik loqo mexanizmi). Admin email: samir.akhundoff@gmail.com',
+      registration: 'Vəkillər Google hesabı ilə /vekil/giris-dən daxil olur → ad/soyad/telefon/müddət (1ay/6ay/1il) ilə müraciət göndərir (/vekil/basvuru) → admin (/admin) "Təsdiqlə" ilə aktivləşdirir, seçilmiş müddətə uyğun bitmə tarixi hesablanır. Təsdiqdən əvvəl: Vəkil Panelinə çıxış yoxdur, HƏMÇİNİN adi sənəd səhifələrində mətn kopyalama/DOCX-PDF endirmə bloklanıb (yalnız aktiv-təsdiqli vəkil üçün açıqdır — bu yoxlama DocumentFormPage.jsx-də ayrıca aparılır, sadəcə Google girişi kifayət etmir).',
+      firebase: 'Layihə: sened-9e247, Realtime Database (region: europe-west1).\nPath: vekiller/{uid}/profil, vekiller/{uid}/basvuru (status: gozlemede/aktiv/redd, bitmeTarixi), vekiller/{uid}/musteriler/{musteriId}/senedler/{senedId} (müştəriyə bağlı sənədlər), vekiller/{uid}/senedler/{senedId} (müştərisiz, vəkilin ümumi sənədləri).\nRules: hər iki senedler node-una yazma/oxuma yalnız auth.uid===$vekilId VƏ basvuru/status==="aktiv" VƏ bitmeTarixi>now olduqda.',
+      notes: 'GitHub: github.com/Samir210-az/sened. Vercel env: DEEPSEEK_API_KEY (AI generasiya), RESEND_API_KEY (vəkil müraciəti email bildirişi, admin-ə). WhatsApp bildirişi wa.me linki ilə (əl ilə göndərilir). PWA dəstəyi var. Vəkil Dashboard-da 2 tab: "Sənədlərim" (ümumi) və "Müştərilərim"; hər saxlanmış sənəd sonradan "Redaktə et" ilə yenidən açılıb dəyişdirilə bilər. Sayt üzrə axtarış (/axtar) yazı-səhvinə dözümlü (fuzzy) işləyir.'
     },
     {
       id: 'emlak-crm',
@@ -1059,6 +1077,9 @@ function loadData(){
   }
   if(currentVersion < 17){
     newEntriesV17().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 18){
+    projects = applyV18Updates(projects);
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
