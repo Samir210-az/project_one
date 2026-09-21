@@ -177,6 +177,7 @@
     <input class="pass" type="password" id="passInput" placeholder="••••••" inputmode="numeric" autocomplete="off">
     <button type="submit" class="btn btn-primary" id="lockBtn">Aç</button>
   </form>
+  <button type="button" class="btn btn-ghost" id="biometricBtn" style="display:none;margin-top:10px;width:100%;">🔓 Barmaq izi ilə aç</button>
   <div id="lockMsg"></div>
   <div id="lockHint"></div>
 </div>
@@ -187,6 +188,7 @@
     <div class="h-title">Layihə Yaddaşı<small id="countLabel">yüklənir...</small></div>
     <div style="display:flex;gap:8px;">
       <div class="icon-btn" id="exportBtn" title="Ehtiyat nüsxə">⇩</div>
+      <div class="icon-btn" id="biometricSetupBtn" title="Barmaq izi ilə giriş">👆</div>
       <div class="icon-btn" id="lockAppBtn" title="Bağla">⏻</div>
     </div>
   </header>
@@ -197,7 +199,7 @@
 
   <footer class="foot">
     Bu seyf yalnız bu telefonda saxlanılır — heç bir serverə göndərilmir.<br>
-    By <a href="https://instagram.com/s_akhundoff" target="_blank">s_akhundoff</a>
+    <a href="https://instagram.com/securtiy_group" target="_blank">By securtiy_group</a>
   </footer>
 </div>
 
@@ -214,6 +216,7 @@
 
 const LS_HASH = 'vault_hash_v1';
 const LS_DATA = 'vault_data_v1';
+const LS_WEBAUTHN_ID = 'vault_webauthn_id_v1';
 
 // ---------- Naming: "birinci dəfə açanda parol qoy" ----------
 async function sha256(text){
@@ -246,8 +249,72 @@ function setupLockScreenText(){
     lockBtn.textContent = 'Aç';
     lockHint.textContent = '';
   }
+  updateBiometricButton();
 }
 setupLockScreenText();
+
+// ---------- WebAuthn: cihazın öz biometrik sensoru ilə sürətli açılış ----------
+// Qeyd: server olmadığı üçün bu, imzanın kriptoqrafik yoxlanması deyil —
+// yalnız "OS-in platform authenticator-ı uğurla cavab verdi" faktına əsaslanır.
+// Parol həmişə əsas/geri qaytarma metodu olaraq qalır.
+function isWebAuthnSupported(){
+  return !!(window.PublicKeyCredential && navigator.credentials && window.isSecureContext);
+}
+
+function updateBiometricButton(){
+  const btn = document.getElementById('biometricBtn');
+  if(!btn) return;
+  const hasBiometric = !!localStorage.getItem(LS_WEBAUTHN_ID);
+  btn.style.display = (!isFirstRun && hasBiometric && isWebAuthnSupported()) ? 'block' : 'none';
+}
+
+async function registerBiometric(){
+  if(!isWebAuthnSupported()){ showToast('Bu cihaz/brauzer barmaq izini dəstəkləmir'); return; }
+  try{
+    const cred = await navigator.credentials.create({
+      publicKey: {
+        challenge: crypto.getRandomValues(new Uint8Array(32)),
+        rp: { name: 'Müdir Seyfi' },
+        user: {
+          id: crypto.getRandomValues(new Uint8Array(16)),
+          name: 'seyf-sahibi',
+          displayName: 'Seyf Sahibi'
+        },
+        pubKeyCredParams: [{ type:'public-key', alg:-7 }, { type:'public-key', alg:-257 }],
+        authenticatorSelection: { authenticatorAttachment:'platform', userVerification:'required' },
+        timeout: 60000,
+        attestation: 'none'
+      }
+    });
+    const rawIdB64 = btoa(String.fromCharCode(...new Uint8Array(cred.rawId)));
+    localStorage.setItem(LS_WEBAUTHN_ID, rawIdB64);
+    showToast('Barmaq izi ilə giriş aktivləşdirildi');
+    updateBiometricButton();
+  } catch(err){
+    showToast('Aktivləşdirmə alınmadı və ya ləğv edildi');
+  }
+}
+
+async function tryBiometricUnlock(){
+  const stored = localStorage.getItem(LS_WEBAUTHN_ID);
+  if(!stored) return;
+  try{
+    const rawId = Uint8Array.from(atob(stored), c=>c.charCodeAt(0));
+    await navigator.credentials.get({
+      publicKey: {
+        challenge: crypto.getRandomValues(new Uint8Array(32)),
+        allowCredentials: [{ type:'public-key', id: rawId }],
+        userVerification: 'required',
+        timeout: 60000
+      }
+    });
+    unlockApp();
+  } catch(err){
+    lockMsg.textContent = 'Barmaq izi tanınmadı. Parolu daxil et.';
+  }
+}
+
+document.getElementById('biometricBtn').addEventListener('click', tryBiometricUnlock);
 
 // letter-wave
 document.getElementById('brandWave').innerHTML =
@@ -276,6 +343,18 @@ function unlockApp(){
   appEl.style.display = 'block';
   renderAll();
 }
+
+document.getElementById('biometricSetupBtn').addEventListener('click', async ()=>{
+  if(localStorage.getItem(LS_WEBAUTHN_ID)){
+    if(confirm('Barmaq izi ilə girişi deaktiv edim?')){
+      localStorage.removeItem(LS_WEBAUTHN_ID);
+      showToast('Deaktiv edildi');
+      updateBiometricButton();
+    }
+    return;
+  }
+  await registerBiometric();
+});
 
 document.getElementById('lockAppBtn').addEventListener('click', ()=>{
   appEl.style.display = 'none';
