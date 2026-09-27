@@ -451,7 +451,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 18;
+const VAULT_VERSION = 19;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -1097,6 +1097,24 @@ function newEntriesV17(){
   ];
 }
 
+function newEntriesV19(){
+  return [
+    {
+      id: 'ixtisas-secimi-testi',
+      name: 'İxtisas Seçimi Testi',
+      url: 'https://ixtisas.vercel.app',
+      type: 'local',
+      category: 'Klinika',
+      desc: '14-16 yaşlı yeniyetmələr üçün ixtisas/ali təhsil seçimini müəyyənləşdirən psixoloji test (RIASEC + qabiliyyət/idrak + şəxsiyyət-dəyərlər, 3 modul, AZ/RU). Sualları yalnız klinik psixoloq göstərir, cavab/nəticəni yalnız psixoloq görür; nəticə çap edilib valideynə verilə bilir. Nəticə hesabatı rule-based (AI-siz), ətraflı izahlı.',
+      adminAccess: 'Testin özü açıq deyil — yalnız psixoloq panelinə PIN ilə (əlavə olaraq barmaq izi/Face ID — WebAuthn — sürətli açılışla, PIN həmişə əsas/geri qaytarma metodu olaraq qalır) daxil olub sual göstərmə/nəticəni görmə mümkündür. Uşağın test linki paylaşıla bilər, amma linki açan şəxs yalnız testi keçir, nəticəni görmür.',
+      adminPassword: '[Samir tərəfindən konkret PIN dəyəri təsdiqlənməyib — kodu yoxlayıb dəqiqləşdirmək lazımdır]',
+      registration: 'İstifadəçi (valideyn/uşaq) qeydiyyatı yoxdur. Psixoloq girişi PIN + WebAuthn (barmaq izi/Face ID) ilə qorunur — pilot model bu Müdir Seyfi (project_one) reposundakı modeldən köçürülüb.',
+      firebase: '[Konkret Firebase layihə adı/backend detalları bu söhbətdə təsdiqlənməyib]',
+      notes: 'GitHub: github.com/Samir210-az/ixtisas (private). Bu qeyd Müdir Seyfi daxilindəki mövcud layihələrin ("Cbt1", "ai-test") formatına uyğun olaraq, Samirin verdiyi məlumat əsasında əlavə edilib — admin PIN dəyəri və Firebase detalları kodun özündən yoxlanılıb dəqiqləşdirilməlidir.'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -1160,6 +1178,9 @@ function loadData(){
   }
   if(currentVersion < 18){
     projects = applyV18Updates(projects);
+  }
+  if(currentVersion < 19){
+    newEntriesV19().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
