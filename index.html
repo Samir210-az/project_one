@@ -451,7 +451,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 19;
+const VAULT_VERSION = 20;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -1115,6 +1115,24 @@ function newEntriesV19(){
   ];
 }
 
+function newEntriesV20(){
+  return [
+    {
+      id: 'autizm-gobdo2',
+      name: 'Autizm (GOBDÖ-2)',
+      url: 'https://autism-az.vercel.app/',
+      type: 'local',
+      category: 'Klinika',
+      desc: 'GOBDÖ-2 (Gilliam Otistik Bozukluk Derecelendirme Ölçeği-2, Türkçe uyarlama) üzrə autizm qiymətləndirmə hesablayıcısı. 42 maddə üzrə xam bal, standart bal, persentil və Autizm pozuntusu indeksi (APİ), çap/PDF hesabat, ixtiyari valideyn müsahibəsi və qərar dəstəyi bölməsi. PWA, AN mərkəzinin dizaynında.',
+      adminAccess: 'Səhifə PIN ilə açılır (giriş qapısı). PIN yalnız interfeys səviyyəsində yoxlanılır, real server müdafiəsi deyil.',
+      adminPassword: 'AL2026EA',
+      registration: 'Qeydiyyat yoxdur. Verilənlər (ad, doğum tarixi, cavablar) yalnız brauzerin yaddaşında qalır, heç bir yerə göndərilmir.',
+      firebase: 'Ayrıca verilənlər bazası yoxdur. Yalnız menyunun analytics.js modulu vasitəsilə an-psixoloji-33442 / menyu_analytics yoluna adsız hadisələr yazılır (səhifə baxışı, yekun APİ balı).',
+      notes: 'GitHub: github.com/Samir210-az/autism-rating (private). Vercel: autism-az. Menyuda psixoloji layihələr siyahısındadır. Rəsmi Puanlama Formu (42 maddənin hamısı, Ebeveyn Görüşmesi, Anahtar Sorular) və Kullanım Belgesi satıcıdan/müəlliflərdən gözlənilir; hələlik 22 maddənin mətni kitabçadan götürülüb, valideyn müsahibəsi mərkəzin işçi siyahısıdır (rəsmi mətn deyil).'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -1181,6 +1199,9 @@ function loadData(){
   }
   if(currentVersion < 19){
     newEntriesV19().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 20){
+    newEntriesV20().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
