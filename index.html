@@ -451,7 +451,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 20;
+const VAULT_VERSION = 21;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -1133,6 +1133,24 @@ function newEntriesV20(){
   ];
 }
 
+function newEntriesV21(){
+  return [
+    {
+      id: 'web-sayt',
+      name: 'Sayt Yaradıcı (web-sayt)',
+      url: 'https://web-sayt-az.vercel.app',
+      type: 'firebase',
+      category: 'Biznes',
+      desc: 'Şirkətlərin 11 hazır şablondan birini seçib birbaşa səhifədə redaktə etdiyi və /s/{ad} ünvanında dərc etdiyi və ya ZIP kimi endirdiyi sayt yaradıcı platforma.',
+      adminAccess: 'Ayrıca admin paneli yoxdur. Redaktora giriş e-poçt+parol və ya Google hesabı ilə olur. İstifadəçilərə Firebase Console → Authentication, dərc olunmuş saytlara isə Realtime Database → published bölməsindən baxılır.',
+      adminPassword: 'PIN/parol yoxdur — hər istifadəçi öz hesabı ilə girir. Sənin tərəfdə ortaq parol saxlanılmır.',
+      registration: 'İstifadəçi e-poçt+parol və ya Google ilə qeydiyyatdan keçir, şablonu seçir və redaktə edir. Giriş edəndə və sayt dərc edəndə Telegram-a (@samir_bildiris_bot) mesaj gəlir: e-poçt, şablon və dərc olunmuş saytın linki.',
+      firebase: 'Layihə: petcrm-c0cfe (default Realtime Database, europe-west1; Auth və Storage da bu layihədədir). Düyünlər: sites/{uid}_{şablon}, subdomains/{ad}, published/{ad}. Rules PET CRM qaydaları ilə birləşdirilmiş fayldan (firebase/database.rules.petcrm-merged.json) dərc olunub.',
+      notes: 'GitHub: github.com/Samir210-az/web-sayt. Vercel env: NEXT_PUBLIC_FIREBASE_* dəyişənləri, TELEGRAM_BOT_TOKEN və TELEGRAM_CHAT_ID (yalnız server). Dərc olunmuş saytlar brauzerdə render olunur (SEO məhdudiyyəti var).'
+    }
+  ];
+}
+
 // ---------- State ----------
 let projects = [];
 let activeCat = 'Hamısı';
@@ -1202,6 +1220,9 @@ function loadData(){
   }
   if(currentVersion < 20){
     newEntriesV20().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 21){
+    newEntriesV21().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
