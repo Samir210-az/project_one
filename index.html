@@ -451,7 +451,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 23;
+const VAULT_VERSION = 24;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -1156,15 +1156,15 @@ function newEntriesV22(){
     {
       id: 'iq-test',
       name: 'IQ TEST',
-      url: 'https://test-iq-rosy.vercel.app/',
+      url: 'https://iqtest-az.vercel.app/',
       type: 'firebase',
       category: 'Klinika',
       desc: 'AN Mərkəzi üçün təfəkkür (IQ) qiymətləndirmə sistemi, tədqiqat versiyası. Qeyri-verbal matris tapşırıqları və verbal təfəkkür maddələri (söz analogiyası, artıq söz, oxşarlıq, söz mənası), 3 yaş forması: 3-6, 7-10, 11-15. Nəticəni yalnız psixoloq görür, uşağa göstərilmir.',
-      adminAccess: 'Psixoloq PIN ilə daxil olur, test başlamazdan əvvəl uşağın adı, soyadı və yaşı daxil edilir, psixoloqun adı hər testdə qeyd olunur. PWA kimi telefona quraşdırıla bilir (service worker network-first).',
-      adminPassword: '[PIN kodda yalnız SHA-256 hash kimi saxlanılır, açıq dəyəri bu qeyddə yoxdur. Özün əlavə et]',
-      registration: 'İstifadəçi (valideyn/uşaq) qeydiyyatı yoxdur. Giriş yalnız psixoloq PIN-i ilə olur.',
-      firebase: 'Nəticələr mərkəzin mövcud Çayxana layihəsinin Realtime Database-inə yazılır (yeni verilənlər bazası açılmayıb). Layihə: cayxana-default-rtdb (europe-west1), yol: iq_results. Kodlar AN-#### formatındadır.',
-      notes: 'GitHub: github.com/Samir210-az/iq-test (private). Vercel: test-iq-rosy. Menyuda "IQ TEST" adı ilə siyahıdadır. Hazırda tədqiqat/pilot mərhələsindədir: mütəxəssislərə təqdim ediləcək, sonra Təhsil Nazirliyinə təqdim planlaşdırılır. Psixoloji terminlərdə "mühakimə" əvəzinə "təfəkkür" işlədilir.'
+      adminAccess: 'Psixoloq Google hesabı ilə daxil olur, admin (samir.akhundoff@gmail.com) icazə verdikdən sonra menyu açılır. Admin paneli: /admin.html, loqoya 5 dəfə basmaqla da açılır. Test başlamazdan əvvəl uşağın adı, soyadı və yaşı daxil edilir, psixoloqun adı hər testdə qeyd olunur. Test bitəndə sessiya bağlanır. PWA kimi telefona quraşdırıla bilir.',
+      adminPassword: 'Yoxdur. Giriş Google hesabı ilə, icazə iq_staff qeydi ilə verilir (müddətli lisenziya).',
+      registration: 'Psixoloq Google ilə daxil olub ad, iş yeri və telefonu göndərir (iq_requests), admin admin.html-də təsdiq edir. Uşaq/valideyn qeydiyyatı yoxdur.',
+      firebase: 'Layihə an-psixoloji-33442, ayrıca Realtime Database instance: an-psixoloji-33442-iq (europe-west1). Yollar: iq_results, iq_staff, iq_requests. Qaydalar repoda database.rules.iq.json. Kodlar AN-#### formatındadır.',
+      notes: 'GitHub: github.com/Samir210-az/iq-test (private). Vercel: iqtest-az. Menyuda "IQ TEST" adı ilə siyahıdadır. Hazırda tədqiqat/pilot mərhələsindədir: mütəxəssislərə təqdim ediləcək, sonra Təhsil Nazirliyinə təqdim planlaşdırılır. Psixoloji terminlərdə "mühakimə" əvəzinə "təfəkkür" işlədilir.'
     }
   ];
 }
@@ -1251,6 +1251,13 @@ function loadData(){
       const fix = newEntriesV22()[0];
       if(String(iq.adminPassword||'').startsWith('[Konkret')) iq.adminPassword = fix.adminPassword;
       if(String(iq.firebase||'').includes('dəqiqləşdirilməlidir')) iq.firebase = fix.firebase;
+    }
+  }
+  if(currentVersion < 24){
+    const iq = projects.find(p=>p.id==='iq-test');
+    if(iq){
+      const fix = newEntriesV22()[0];
+      ['url','adminAccess','adminPassword','registration','firebase','notes'].forEach(k=>{ iq[k] = fix[k]; });
     }
   }
   if(currentVersion < VAULT_VERSION){
