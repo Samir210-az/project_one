@@ -451,7 +451,7 @@ function defaultProjects(){
 
 // ---------- Migration: yeni kurs layihələri (kurs portalı ilə işləyənlər) ----------
 const LS_VERSION = 'vault_version_v1';
-const VAULT_VERSION = 22;
+const VAULT_VERSION = 23;
 
 function newEntriesV2(){
   const portalNote = 'Bu kursda ayrıca admin PIN-i yoxdur — giriş mərkəzi "an-kurs-portali" saytından Firebase Auth ilə idarə olunur. Admin olmaq üçün Firebase-də portal/admins/{istifadəçi UID} = true olmalıdır.';
@@ -1161,9 +1161,9 @@ function newEntriesV22(){
       category: 'Klinika',
       desc: 'AN Mərkəzi üçün təfəkkür (IQ) qiymətləndirmə sistemi, tədqiqat versiyası. Qeyri-verbal matris tapşırıqları və verbal təfəkkür maddələri (söz analogiyası, artıq söz, oxşarlıq, söz mənası), 3 yaş forması: 3-6, 7-10, 11-15. Nəticəni yalnız psixoloq görür, uşağa göstərilmir.',
       adminAccess: 'Psixoloq PIN ilə daxil olur, test başlamazdan əvvəl uşağın adı, soyadı və yaşı daxil edilir, psixoloqun adı hər testdə qeyd olunur. PWA kimi telefona quraşdırıla bilir (service worker network-first).',
-      adminPassword: '[Konkret PIN dəyəri bu söhbətdə təsdiqlənməyib, kodu yoxlayıb dəqiqləşdirmək lazımdır]',
+      adminPassword: '[PIN kodda yalnız SHA-256 hash kimi saxlanılır, açıq dəyəri bu qeyddə yoxdur. Özün əlavə et]',
       registration: 'İstifadəçi (valideyn/uşaq) qeydiyyatı yoxdur. Giriş yalnız psixoloq PIN-i ilə olur.',
-      firebase: 'Nəticələr mərkəzin mövcud Çayxana layihəsinin Realtime Database-inə yazılır (yeni verilənlər bazası açılmayıb). Konkret layihə adı koddan yoxlanılıb dəqiqləşdirilməlidir.',
+      firebase: 'Nəticələr mərkəzin mövcud Çayxana layihəsinin Realtime Database-inə yazılır (yeni verilənlər bazası açılmayıb). Layihə: cayxana-default-rtdb (europe-west1), yol: iq_results. Kodlar AN-#### formatındadır.',
       notes: 'GitHub: github.com/Samir210-az/iq-test (private). Vercel: test-iq-rosy. Menyuda "IQ TEST" adı ilə siyahıdadır. Hazırda tədqiqat/pilot mərhələsindədir: mütəxəssislərə təqdim ediləcək, sonra Təhsil Nazirliyinə təqdim planlaşdırılır. Psixoloji terminlərdə "mühakimə" əvəzinə "təfəkkür" işlədilir.'
     }
   ];
@@ -1244,6 +1244,14 @@ function loadData(){
   }
   if(currentVersion < 22){
     newEntriesV22().forEach(np=>{ if(!existingIds.has(np.id)){ projects.push(np); existingIds.add(np.id);} });
+  }
+  if(currentVersion < 23){
+    const iq = projects.find(p=>p.id==='iq-test');
+    if(iq){
+      const fix = newEntriesV22()[0];
+      if(String(iq.adminPassword||'').startsWith('[Konkret')) iq.adminPassword = fix.adminPassword;
+      if(String(iq.firebase||'').includes('dəqiqləşdirilməlidir')) iq.firebase = fix.firebase;
+    }
   }
   if(currentVersion < VAULT_VERSION){
     localStorage.setItem(LS_VERSION, String(VAULT_VERSION));
